@@ -4,5 +4,5 @@
     <string name="bestiaries_save_string">bestiaries</string>
 
     <string name="info_string"><b>No files imported!</b>\nImport files from toolbar.\n
-        <a href="https://github.com./libco/bestiary5thedition">Information on how to download them</a></string>
+        <a href="https://github.com/Libco/bestiary5thedition/blob/master/README.md">Information on how to download them</a></string>
 </resources>
