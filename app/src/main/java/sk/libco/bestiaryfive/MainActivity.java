@@ -67,7 +67,6 @@ public class MainActivity extends AppCompatActivity {
 
         TextView textViewInfo = (TextView) findViewById(R.id.textViewInfo);
         textViewInfo.setMovementMethod(LinkMovementMethod.getInstance());
-        textViewInfo.setVisibility(View.VISIBLE);
 
         /****/
         bestiaries = new Bestiaries(this);
@@ -226,6 +225,9 @@ public class MainActivity extends AppCompatActivity {
                 }
                 @Override
                 public boolean onQueryTextSubmit(String query) {
+                    if(query.isEmpty() || bestiaries.selectedBestiary == null)
+                        return true;
+
                     for (Monster m:bestiaries.selectedBestiary.monsters) {
                         if(m.name.toLowerCase().startsWith(query.toLowerCase())) {
                             setMonsterToView(m);
@@ -315,6 +317,9 @@ public class MainActivity extends AppCompatActivity {
                         .make(findViewById(R.id.activity_main), "Loaded " + result + " monsters.", Snackbar.LENGTH_LONG);
 
                 snackbar.show();
+            } else {
+                TextView textViewInfo = (TextView) findViewById(R.id.textViewInfo);
+                textViewInfo.setVisibility(View.VISIBLE);
             }
 
         }
