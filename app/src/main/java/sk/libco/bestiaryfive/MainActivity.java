@@ -252,7 +252,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.import_file:
                 Log.d(TAG, "add new bestiary");
                 Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                intent.setType("text/xml");
+                intent.setType("*/*");
                 startActivityForResult(intent, 42);
                 return true;
             default:
