@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Bestiary 5th Edition</string>
+
+    <string name="bestiaries_save_string">bestiaries</string>
+
+    <string name="info_string"><b>No files imported!</b>\nImport files from toolbar.\n
+        <a href="https://github.com./libco/bestiary5thedition">Information on how to download them</a></string>
+</resources>
