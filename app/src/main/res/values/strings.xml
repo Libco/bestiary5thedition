@@ -5,4 +5,19 @@
 
     <string name="info_string"><b>No files imported!</b>\nImport files from toolbar.\n
         <a href="https://github.com/Libco/bestiary5thedition/blob/master/README.md">Information on how to download them</a></string>
+    <string name="search">Search</string>
+    <string name="import_file">Import file</string>
+    <string name="info">Info</string>
+    <string name="armor_class">Armor Class</string>
+    <string name="hit_points">Hit Points</string>
+    <string name="speed">Speed</string>
+    <string name="str">STR</string>
+    <string name="dex">DEX</string>
+    <string name="con">CON</string>
+    <string name="inteligence">INT</string>
+    <string name="wis">WIS</string>
+    <string name="cha">CHA</string>
+    <string name="actions">Actions</string>
+    <string name="legendary_actions">Legendary Actions</string>
+    <string name="info_string_menu"><a href="https://github.com/Libco/bestiary5thedition/blob/master/README.md">Information on file importing can be found here.</a></string>
 </resources>

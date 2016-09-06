@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/search"
-        android:title="Search"
+        android:title="@string/search"
         app:showAsAction="ifRoom|collapseActionView"
         app:actionViewClass="android.support.v7.widget.SearchView"
         android:icon="@drawable/ic_search"
@@ -11,8 +11,13 @@
         />
 
     <item android:id="@+id/import_file"
-        android:title="Import file"
+        android:title="@string/import_file"
         app:showAsAction="collapseActionView"
-        android:icon="@drawable/ic_action_name" />
+        android:icon="@drawable/ic_import" />
+
+    <item android:id="@+id/help"
+        android:title="@string/info"
+        android:icon="@android:drawable/ic_menu_help" />
+
 
 </menu>

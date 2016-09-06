@@ -148,6 +148,10 @@ public class Bestiaries {
         return displayName;
     }
 
+    public int getBestiariesCount() {
+        return bestiaries.size();
+    }
+
 
 
 }

@@ -1,0 +1,10 @@
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:text="@string/info_string"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/textViewInfo"
+    android:layout_below="@+id/toolbar"
+    android:textAppearance="@style/TextAppearance.AppCompat"
+    android:textSize="18sp"
+    android:textAlignment="center"
+    android:paddingTop="8dp" />

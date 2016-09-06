@@ -1,4 +1,4 @@
-package sk.libco.bestiaryfive;
+package sk.libco.bestiaryfive.ui.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -8,6 +8,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.List;
+
+import sk.libco.bestiaryfive.Monster;
+import sk.libco.bestiaryfive.R;
 
 public class FeatureAdapter extends RecyclerView.Adapter<FeatureAdapter.ViewHolder> {
     private List<Monster.Trait> traitList;
