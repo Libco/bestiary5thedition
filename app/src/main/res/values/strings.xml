@@ -4,7 +4,7 @@
     <string name="bestiaries_save_string">bestiaries</string>
 
     <string name="info_string"><b>No files imported!</b>\nImport files from toolbar.\n
-        <a href="https://github.com/Libco/bestiary5thedition/blob/master/README.md">Information on how to download them</a></string>
+        <a href="https://github.com/Libco/bestiary5thedition/blob/master/INSTRUCTIONS.md">Information on how to download them</a></string>
     <string name="search">Search</string>
     <string name="import_file">Import file</string>
     <string name="info">Info</string>
@@ -19,5 +19,5 @@
     <string name="cha">CHA</string>
     <string name="actions">Actions</string>
     <string name="legendary_actions">Legendary Actions</string>
-    <string name="info_string_menu"><a href="https://github.com/Libco/bestiary5thedition/blob/master/README.md">Information on file importing can be found here.</a></string>
+    <string name="info_string_menu"><a href="https://github.com/Libco/bestiary5thedition/blob/master/INSTRUCTIONS.md">Information on file importing can be found here.</a></string>
 </resources>
