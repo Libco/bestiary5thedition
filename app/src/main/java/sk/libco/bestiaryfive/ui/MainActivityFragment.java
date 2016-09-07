@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -40,7 +41,8 @@ public class MainActivityFragment extends Fragment {
 
     //
     private Monster selectedMonster = null;
-    private boolean initialized = false;
+    private View view = null;
+
 
     public MainActivityFragment() {
     }
@@ -48,7 +50,7 @@ public class MainActivityFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_main, container, false);
+        view = inflater.inflate(R.layout.fragment_main, container, false);
 
 
         /**
@@ -143,15 +145,30 @@ public class MainActivityFragment extends Fragment {
         linearLayoutLegendaryActions = (LinearLayout) view.findViewById(R.id.linearViewLegendary);
 
         /****/
-        initialized = true;
+        Log.d(TAG,"onCreateView initialized");
+        setMonsterToView(selectedMonster);
 
         return view;
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        view = null;
+    }
+
     public void setMonsterToView(Monster monster) {
 
-        if(!initialized || selectedMonster == monster)
+        if(monster == null) {
+            Log.d(TAG,"Monster is null - cannot set");
             return;
+        }
+
+        if(view == null) {
+            selectedMonster = monster;
+            Log.d(TAG,"UI is not initialized, saving " + monster.name + " to show later");
+            return;
+        }
 
         Log.d(TAG,"setting monster to: " + monster.name);
 
@@ -184,15 +201,12 @@ public class MainActivityFragment extends Fragment {
             linearLayoutLegendaryActions.setVisibility(View.GONE);
         }
 
-        selectedMonster = monster;
     }
 
     private void setTextView(int textView, String text) {
-        try {
-            TextView textViewType = (TextView) getView().findViewById(textView);
+        if(view != null) {
+            TextView textViewType = (TextView) view.findViewById(textView);
             textViewType.setText(text);
-        } catch (Exception e) {
-            Log.e(TAG,e.toString());
         }
     }
 

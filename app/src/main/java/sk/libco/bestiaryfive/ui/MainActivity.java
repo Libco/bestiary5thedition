@@ -26,20 +26,23 @@ import sk.libco.bestiaryfive.Bestiaries;
 import sk.libco.bestiaryfive.Monster;
 import sk.libco.bestiaryfive.R;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MonsterListFragment.OnListFragmentInteractionListener{
 
     private static final String TAG = "MainActivity";
 
     Spinner spinner;
     ArrayAdapter<String> spinnerDataAdapter;
 
+    private MenuItem searchItem;
     private SearchView searchView = null;
     private SearchView.OnQueryTextListener queryTextListener;
 
     private Bestiaries bestiaries;
+    private AsyncTask parseTask;
 
     MainActivityInfoFragment infoFragment = null; //fragment for when nothing is imported
-    MainActivityFragment monsterFragment = null;
+    MainActivityFragment monsterFragment = null; //fragment for single monster
+    MonsterListFragment monsterListFragment = null; //fragment for monster list
 
 
     @Override
@@ -82,7 +85,18 @@ public class MainActivity extends AppCompatActivity {
 
         /** Parse monsters from file **/
         //bestiaries.load();
-        new ParseTask().execute(Uri.EMPTY);
+        parseTask = new ParseTask().execute(Uri.EMPTY);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        //check if parsing task is not running, if not make sure we have the right fragment.
+        if(parseTask != null && parseTask.getStatus() == AsyncTask.Status.FINISHED) {
+            Log.d(TAG,"onStart: setting Fragment because task is finished");
+            setFragment();
+        }
     }
 
     @Override
@@ -91,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
         inflater.inflate(R.menu.options_menu, menu);
 
         //
-        MenuItem searchItem = menu.findItem(R.id.search);
+        searchItem = menu.findItem(R.id.search);
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
 
         if (searchItem != null) {
@@ -103,15 +117,12 @@ public class MainActivity extends AppCompatActivity {
             queryTextListener = new SearchView.OnQueryTextListener() {
                 @Override
                 public boolean onQueryTextChange(String newText) {
-                    if(newText.isEmpty() || bestiaries.selectedBestiary == null)
+                    if(bestiaries.selectedBestiary == null)
                         return true;
 
-                    for (Monster m:bestiaries.selectedBestiary.monsters) {
-                        if(m.name.toLowerCase().startsWith(newText.toLowerCase())) {
-                            setMonsterToView(m);
-                            break;
-                        }
-                    }
+                    setFragment();
+
+                    monsterListFragment.search(newText);
 
                     return true;
                 }
@@ -123,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
                     for (Monster m:bestiaries.selectedBestiary.monsters) {
                         if(m.name.toLowerCase().startsWith(query.toLowerCase())) {
                             setMonsterToView(m);
+                            //TODO:
                             break;
                         }
                     }
@@ -197,10 +209,12 @@ public class MainActivity extends AppCompatActivity {
 
         protected void onPostExecute(Integer result) {
 
-            if(bestiaries.selectedBestiary != null) {
+            if(bestiaries.selectedBestiary != null && result > 0) {
                 spinnerDataAdapter.notifyDataSetChanged();
                 spinner.setSelection(spinnerDataAdapter.getPosition(bestiaries.selectedBestiary.name));
-                setMonsterToView(bestiaries.selectedBestiary.monsters.get(0));
+
+                //if(bestiaries.selectedBestiary.monsters.size()>0)
+                //    setMonsterToView(bestiaries.selectedBestiary.monsters.get(0));
 
                 Snackbar snackbar = Snackbar
                         .make(findViewById(R.id.activity_main), "Loaded " + result + " monsters.", Snackbar.LENGTH_LONG);
@@ -208,6 +222,7 @@ public class MainActivity extends AppCompatActivity {
                 snackbar.show();
             }
 
+            Log.d(TAG,"ParsingTask onPostExecute(): setting Fragment.");
             setFragment();
 
         }
@@ -218,12 +233,30 @@ public class MainActivity extends AppCompatActivity {
         Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
 
         if(bestiaries.getBestiariesCount() > 0) {
+
+            if (!(currentFragment instanceof MonsterListFragment)) {
+                Log.d(TAG,"Showing monsterList fragment");
+                if(monsterListFragment == null) {
+                    monsterListFragment = new MonsterListFragment();
+                }
+
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.fragment_container, monsterListFragment, null);
+                ft.commit();
+            } else {
+                monsterListFragment = (MonsterListFragment) currentFragment;
+            }
+
+            //monsterListFragment.setMonsterList(bestiaries.selectedBestiary.monsters);
+
             if (!(currentFragment instanceof MainActivityFragment)) {
-                Log.d(TAG,"Showing monster fragment");
+                /*Log.d(TAG,"Showing monster fragment");
                 monsterFragment = new MainActivityFragment();
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 ft.replace(R.id.fragment_container, monsterFragment, null);
-                ft.commit();
+                ft.commit();*/
+            } else {
+                monsterFragment = (MainActivityFragment) currentFragment;
             }
         } else {
             if (!(currentFragment instanceof MainActivityInfoFragment)) {
@@ -232,6 +265,8 @@ public class MainActivity extends AppCompatActivity {
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 ft.replace(R.id.fragment_container, infoFragment, null);
                 ft.commit();
+            } else {
+                infoFragment = (MainActivityInfoFragment) currentFragment;
             }
         }
     }
@@ -239,18 +274,42 @@ public class MainActivity extends AppCompatActivity {
     private void selectBestiary(int position) {
         Log.d(TAG,"Setting bestiary to position: " + position);
         bestiaries.setSelectedBestiary(position);
-        setMonsterToView(bestiaries.selectedBestiary.monsters.get(0));
+        if(monsterListFragment != null)
+            monsterListFragment.setMonsterList(bestiaries.selectedBestiary.monsters);
+        //setMonsterToView(bestiaries.selectedBestiary.monsters.get(0));
     }
 
     private void setMonsterToView(Monster monster) {
-        if(monsterFragment == null)
-            return;
 
         Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-        if (currentFragment instanceof MainActivityFragment) {
-            monsterFragment.setMonsterToView(monster);
+
+        if (!(currentFragment instanceof MainActivityFragment)) {
+            Log.d(TAG,"Showing monster fragment");
+            if(monsterFragment == null)
+                monsterFragment = new MainActivityFragment();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.addToBackStack(null);
+            //ft.setCustomAnimations(R.animator.enter_from_right,
+             //       R.animator.exit_to_right);
+            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+            ft.replace(R.id.fragment_container, monsterFragment, null);
+            ft.commit();
+        } else {
+            monsterFragment = (MainActivityFragment) currentFragment;
         }
+        monsterFragment.setMonsterToView(monster);
+
     }
 
-
+    /**
+     * Callback from MonsterListFragment
+     * @param monster Monster user clicked
+     */
+    @Override
+    public void onMonsterSelected(Monster monster) {
+        Log.d(TAG,"User clicked on: " + monster.name);
+       // searchView.clearFocus();
+        setMonsterToView(monster);
+        searchItem.collapseActionView();
+    }
 }
