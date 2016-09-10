@@ -40,9 +40,13 @@ public class MonsterListRecyclerViewAdapter extends RecyclerView.Adapter<Monster
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).name);
-        holder.mContentView.setText(mValues.get(position).type);
+
+        Monster m = mValues.get(position);
+
+        holder.mItem = m;
+        holder.mIdView.setText(m.name);
+        holder.mContentView.setText(m.type);
+        holder.mCrView.setText(m.cr + " cr");
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,6 +71,7 @@ public class MonsterListRecyclerViewAdapter extends RecyclerView.Adapter<Monster
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
+        public final TextView mCrView;
         public Monster mItem;
 
         public ViewHolder(View view) {
@@ -74,6 +79,7 @@ public class MonsterListRecyclerViewAdapter extends RecyclerView.Adapter<Monster
             mView = view;
             mIdView = (TextView) view.findViewById(R.id.id);
             mContentView = (TextView) view.findViewById(R.id.content);
+            mCrView = (TextView) view.findViewById(R.id.textViewCR);
         }
 
         @Override

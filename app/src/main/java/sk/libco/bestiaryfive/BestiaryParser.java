@@ -100,9 +100,9 @@ public class BestiaryParser {
                     //Log.d(TAG,"added new legendary: " + newlegendary.name);
                 }
                 else if(parserName.equals("reaction")) {
-                    Monster.Trait newTrait = monster.addTrait();
+                    Monster.Trait newTrait = monster.addReaction();
                     readTraits(parser, newTrait, parserName);
-                    //Log.d(TAG,"added new trait: " + newTrait.name);
+                    //Log.d(TAG,"added new reaction: " + newTrait.name);
                 }
                 else{
                     Field field = Monster.class.getField(parserName);

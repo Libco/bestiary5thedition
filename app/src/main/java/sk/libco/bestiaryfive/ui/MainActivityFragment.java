@@ -26,13 +26,16 @@ public class MainActivityFragment extends Fragment {
 
     private static final String TAG = "MainActivityFragment";
 
-    LinearLayout linearLayoutLegendaryActions;
+    private LinearLayout linearLayoutLegendaryActions;
+    private LinearLayout linearLayoutReactions;
+    private LinearLayout linearLayoutDescription;
 
     //recyclerviews
     private FeatureAdapter mAdapterFeatures;
     private FeatureAdapter mAdapterFeats;
     private FeatureAdapter mAdapterActions;
     private FeatureAdapter mAdapterLegendaryActions;
+    private FeatureAdapter mAdapterReactions;
 
     List<Monster.Trait> features = new ArrayList<>();
     List<Monster.Trait> traits = new ArrayList<>();
@@ -121,6 +124,27 @@ public class MainActivityFragment extends Fragment {
         mRecyclerViewActions.setAdapter(mAdapterActions);
 
         /**
+         * Reactions Recycler view
+         */
+        RecyclerView mRecyclerViewReactions;
+        RecyclerView.LayoutManager mLayoutManagerReactions;
+
+        mRecyclerViewReactions = (RecyclerView) view.findViewById(R.id.recyclerViewReactions);
+
+        // use this setting to improve performance if you know that changes
+        // in content do not change the layout size of the RecyclerView
+        mRecyclerViewReactions.setHasFixedSize(true);
+
+        // use a linear layout manager
+        mLayoutManagerReactions = new LinearLayoutManager(getContext());
+        mRecyclerViewReactions.setNestedScrollingEnabled(false);
+        mRecyclerViewReactions.setLayoutManager(mLayoutManagerReactions);
+
+        // specify an adapter (see also next example)
+        mAdapterReactions = new FeatureAdapter(null, R.layout.trait_adapter_view);
+        mRecyclerViewReactions.setAdapter(mAdapterReactions);
+
+        /**
          * Legendary Actions Recycler view
          */
         RecyclerView mRecyclerViewLegendaryActions;
@@ -143,6 +167,8 @@ public class MainActivityFragment extends Fragment {
 
         /****/
         linearLayoutLegendaryActions = (LinearLayout) view.findViewById(R.id.linearViewLegendary);
+        linearLayoutReactions = (LinearLayout) view.findViewById(R.id.linearViewReactions);
+        linearLayoutDescription = (LinearLayout) view.findViewById(R.id.linearViewDescription);
 
         /****/
         Log.d(TAG,"onCreateView initialized");
@@ -193,20 +219,40 @@ public class MainActivityFragment extends Fragment {
         //actions
         mAdapterActions.setNewTraitList(monster.actions);
 
-        //legendary actions
-        if(monster.legendaryActions.size() > 0) {
-            mAdapterLegendaryActions.setNewTraitList(monster.legendaryActions);
-            linearLayoutLegendaryActions.setVisibility(View.VISIBLE);
-        } else {
-            linearLayoutLegendaryActions.setVisibility(View.GONE);
-        }
+        //reactions
+        setNewTraitListIfVisible(monster.reactions ,mAdapterReactions, linearLayoutReactions);
 
+        //legendary actions
+        setNewTraitListIfVisible(monster.legendaryActions, mAdapterLegendaryActions, linearLayoutLegendaryActions);
+
+        //description
+        setTextViewIfVisible(R.id.textViewDescription,monster.description, linearLayoutDescription);
+
+    }
+
+    private void setNewTraitListIfVisible(List<Monster.Trait> items, FeatureAdapter featureAdapter, LinearLayout itemView) {
+        if(items.size() > 0) {
+            featureAdapter.setNewTraitList(items);
+            itemView.setVisibility(View.VISIBLE);
+        } else {
+            itemView.setVisibility(View.GONE);
+        }
     }
 
     private void setTextView(int textView, String text) {
         if(view != null) {
             TextView textViewType = (TextView) view.findViewById(textView);
             textViewType.setText(text);
+        }
+    }
+
+    private void setTextViewIfVisible(int textView, String text, LinearLayout itemView) {
+        if(view != null && text != null && !text.isEmpty()) {
+            TextView textViewType = (TextView) view.findViewById(textView);
+            textViewType.setText(text);
+            itemView.setVisibility(View.VISIBLE);
+        } else {
+            itemView.setVisibility(View.GONE);
         }
     }
 

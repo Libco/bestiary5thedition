@@ -31,9 +31,9 @@ public class Monster {
     public List<Trait> traits = new ArrayList<>();
     public List<Trait> actions = new ArrayList<>();
     public List<Trait> legendaryActions = new ArrayList<>();
-    public List<Trait> reactions = new ArrayList<>();
-    public String spells;
-    public String description;
+    public List<Trait> reactions = new ArrayList<>(); //TODO: add reactions - same as actions //example: bandit captain
+    public String spells; //TODO: add spell list?
+    public String description; //TODO: add description at bottom - simmilar as actions //example:acolyte
 
     public class Trait {
         public String name;

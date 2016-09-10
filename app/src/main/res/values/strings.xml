@@ -18,6 +18,8 @@
     <string name="wis">WIS</string>
     <string name="cha">CHA</string>
     <string name="actions">Actions</string>
+    <string name="reactions">Reactions</string>
     <string name="legendary_actions">Legendary Actions</string>
+    <string name="description">Description</string>
     <string name="info_string_menu"><a href="https://github.com/Libco/bestiary5thedition/blob/master/INSTRUCTIONS.md">Information on file importing can be found here.</a></string>
 </resources>
