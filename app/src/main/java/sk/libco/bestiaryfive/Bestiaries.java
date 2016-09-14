@@ -118,6 +118,16 @@ public class Bestiaries {
         }
     }
 
+    public Monster getMonsterFromName(String name) {
+        if(selectedBestiary != null) {
+            for (Monster m : selectedBestiary.monsters) {
+                if (m.name.equals(name))
+                    return m;
+            }
+        }
+        return null;
+    }
+
     private String getFileName(Uri uri) {
 
         String displayName = "Unknown name";

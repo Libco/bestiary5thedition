@@ -44,6 +44,8 @@ public class MainActivity extends AppCompatActivity implements MonsterListFragme
     MainActivityFragment monsterFragment = null; //fragment for single monster
     MonsterListFragment monsterListFragment = null; //fragment for monster list
 
+    private String selectedMonster = "";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +85,16 @@ public class MainActivity extends AppCompatActivity implements MonsterListFragme
 
         });
 
+      /*  if (savedInstanceState != null) {
+            Log.d(TAG, "Restoring Instance State");
+
+            // Restore state members from saved instance
+            selectedMonster = savedInstanceState.getString("selected_monster");
+
+          //  setMonsterToView(bestiaries.getMonsterFromName(selectedMonster));
+        }*/
+
+
         /** Parse monsters from file **/
         //bestiaries.load();
         parseTask = new ParseTask().execute(Uri.EMPTY);
@@ -95,8 +107,25 @@ public class MainActivity extends AppCompatActivity implements MonsterListFragme
         //check if parsing task is not running, if not make sure we have the right fragment.
         if(parseTask != null && parseTask.getStatus() == AsyncTask.Status.FINISHED) {
             Log.d(TAG,"onStart: setting Fragment because task is finished");
-            setFragment();
+
+            if(selectedMonster != null && !selectedMonster.isEmpty()) {
+                setMonsterToView(bestiaries.getMonsterFromName(selectedMonster));
+            } else
+                setFragment();
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle savedInstanceState) {
+        // Save the user's current game state
+
+      /*  if(selectedMonster != null && !selectedMonster.isEmpty()) {
+            Log.d(TAG,"saving selected monster: " + selectedMonster);
+            savedInstanceState.putString("selected_monster", selectedMonster);
+        }
+
+        // Always call the superclass so it can save the view hierarchy state
+        super.onSaveInstanceState(savedInstanceState);*/
     }
 
     @Override
@@ -281,6 +310,12 @@ public class MainActivity extends AppCompatActivity implements MonsterListFragme
 
     private void setMonsterToView(Monster monster) {
 
+        if(monster == null) {
+            Log.d(TAG,"Monster to show is null");
+            return;
+        }
+
+        selectedMonster = monster.name;
         Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
 
         if (!(currentFragment instanceof MainActivityFragment)) {
