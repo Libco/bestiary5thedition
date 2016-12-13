@@ -25,6 +25,7 @@ import android.widget.Spinner;
 import sk.libco.bestiaryfive.Bestiaries;
 import sk.libco.bestiaryfive.Monster;
 import sk.libco.bestiaryfive.R;
+import sk.libco.bestiaryfive.SqlMM;
 
 public class MainActivity extends AppCompatActivity implements MonsterListFragment.OnListFragmentInteractionListener{
 
@@ -38,14 +39,13 @@ public class MainActivity extends AppCompatActivity implements MonsterListFragme
     private SearchView.OnQueryTextListener queryTextListener;
 
     private Bestiaries bestiaries;
-    private AsyncTask parseTask;
+    //private AsyncTask parseTask;
 
     MainActivityInfoFragment infoFragment = null; //fragment for when nothing is imported
     MainActivityFragment monsterFragment = null; //fragment for single monster
     MonsterListFragment monsterListFragment = null; //fragment for monster list
 
     private String selectedMonster = "";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements MonsterListFragme
 
         /** Parse monsters from file **/
         //bestiaries.load();
-        parseTask = new ParseTask().execute(Uri.EMPTY);
+        //parseTask = new ParseTask().execute(Uri.EMPTY);
     }
 
     @Override
@@ -105,14 +105,14 @@ public class MainActivity extends AppCompatActivity implements MonsterListFragme
         super.onStart();
 
         //check if parsing task is not running, if not make sure we have the right fragment.
-        if(parseTask != null && parseTask.getStatus() == AsyncTask.Status.FINISHED) {
-            Log.d(TAG,"onStart: setting Fragment because task is finished");
+        //if(parseTask != null && parseTask.getStatus() == AsyncTask.Status.FINISHED) {
+        Log.d(TAG,"onStart: setting Fragment because task is finished");
 
-            if(selectedMonster != null && !selectedMonster.isEmpty()) {
-                setMonsterToView(bestiaries.getMonsterFromName(selectedMonster));
-            } else
-                setFragment();
-        }
+        if(selectedMonster != null && !selectedMonster.isEmpty()) {
+            setMonsterToView(bestiaries.getMonsterFromName(selectedMonster));
+        } else
+            setFragment();
+        //}
     }
 
     @Override
@@ -183,10 +183,15 @@ public class MainActivity extends AppCompatActivity implements MonsterListFragme
                 // Not implemented here
                 return false;
             case R.id.import_file:
-                Log.d(TAG, "add new bestiary");
-                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                intent.setType("*/*");
-                startActivityForResult(intent, 42);
+
+                BestiaryImportFragment bestiaryImportFragment = new BestiaryImportFragment();
+                bestiaryImportFragment.setBestiaries(bestiaries);
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ft.addToBackStack(null);
+                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                ft.replace(R.id.fragment_container, bestiaryImportFragment, null);
+                ft.commit();
+
                 return true;
             case R.id.help:
                 InfoDialog infoDialog = InfoDialog.newInstance(0);
@@ -196,65 +201,6 @@ public class MainActivity extends AppCompatActivity implements MonsterListFragme
         }
         searchView.setOnQueryTextListener(queryTextListener);
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        if (requestCode == 42) {
-            if(resultCode == Activity.RESULT_OK){
-                Uri pathUri = data.getData();
-                Log.d(TAG,"ActivityResult: " + pathUri.toString());
-
-                /** Parse monsters from file **/
-                new ParseTask().execute(pathUri);
-
-            }
-            if (resultCode == Activity.RESULT_CANCELED) {
-                //Write your code if there's no result
-            }
-        }
-    }//onActivityResult
-
-    private class ParseTask extends AsyncTask<Uri, Integer, Integer> {
-        protected Integer doInBackground(Uri... uris) {
-
-            int monstersParsed = 0;
-
-            if(uris.length == 1 && uris[0] == Uri.EMPTY) {
-                monstersParsed = bestiaries.load();
-            } else {
-
-                for (Uri uri : uris) {
-                    monstersParsed += bestiaries.importBestiary(uri);
-                }
-            }
-            return monstersParsed;
-        }
-
-        protected void onProgressUpdate(Integer... progress) {
-
-        }
-
-        protected void onPostExecute(Integer result) {
-
-            if(bestiaries.selectedBestiary != null && result > 0) {
-                spinnerDataAdapter.notifyDataSetChanged();
-                spinner.setSelection(spinnerDataAdapter.getPosition(bestiaries.selectedBestiary.name));
-
-                //if(bestiaries.selectedBestiary.monsters.size()>0)
-                //    setMonsterToView(bestiaries.selectedBestiary.monsters.get(0));
-
-                Snackbar snackbar = Snackbar
-                        .make(findViewById(R.id.activity_main), "Loaded " + result + " monsters.", Snackbar.LENGTH_LONG);
-
-                snackbar.show();
-            }
-
-            Log.d(TAG,"ParsingTask onPostExecute(): setting Fragment.");
-            setFragment();
-
-        }
     }
 
     private void setFragment() {
@@ -332,6 +278,7 @@ public class MainActivity extends AppCompatActivity implements MonsterListFragme
         } else {
             monsterFragment = (MainActivityFragment) currentFragment;
         }
+        bestiaries.loadMonsterDetails(monster);
         monsterFragment.setMonsterToView(monster);
 
     }

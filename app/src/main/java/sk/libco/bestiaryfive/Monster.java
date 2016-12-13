@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Monster {
+    public Integer id;
     public String name;
     public String size;
     public String type;
@@ -31,9 +32,11 @@ public class Monster {
     public List<Trait> traits = new ArrayList<>();
     public List<Trait> actions = new ArrayList<>();
     public List<Trait> legendaryActions = new ArrayList<>();
-    public List<Trait> reactions = new ArrayList<>(); //TODO: add reactions - same as actions //example: bandit captain
+    public List<Trait> reactions = new ArrayList<>(); //reactions - same as actions //example: bandit captain
     public String spells; //TODO: add spell list?
-    public String description; //TODO: add description at bottom - simmilar as actions //example:acolyte
+    public String description; // description at bottom - simmilar as actions //example:acolyte
+
+    public boolean isDetailsLoaded = false;
 
     public class Trait {
         public String name;

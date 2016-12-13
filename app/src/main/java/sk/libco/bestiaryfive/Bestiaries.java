@@ -5,11 +5,15 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.provider.OpenableColumns;
 import android.util.Log;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -19,18 +23,21 @@ public class Bestiaries {
 
     private static final String TAG = "Bestiaries";
 
-    private List<Bestiary> bestiaries = new ArrayList<>();
+    private List<Bestiary> bestiaries = null;
     public Bestiary selectedBestiary = null;
 
     public List<String> spinnerList = new ArrayList<>();
     private BestiaryParser bestiaryParser = new BestiaryParser();
 
     private Activity context = null;
+    private SqlMM sql = null;
 
     public Bestiaries(Activity context) {
         this.context = context;
-    }
+        this.sql = new SqlMM(context);
 
+        load();
+    }
 
     public int importBestiary(Uri uri) {
 
@@ -42,6 +49,8 @@ public class Bestiaries {
             newBestiary.uri = uri;
             is = context.getContentResolver().openInputStream(uri);
             newBestiary.monsters = bestiaryParser.parse(is);
+
+            sql.addBestiary(newBestiary);
 
         } catch (Exception e) {
             //log the exception
@@ -56,13 +65,22 @@ public class Bestiaries {
             }
         }
 
-        if(newBestiary.monsters != null) {
-            Log.d(TAG, "Parsed " + newBestiary.monsters.size() + " monsters to " + newBestiary.name);
-            bestiaries.add(newBestiary);
-            spinnerList.add(newBestiary.name);
-            i = newBestiary.monsters.size();
-        } else {
-            Log.d(TAG,"PARSING ERROR.");
+        load();
+
+        return i;
+    }
+
+    public void deleteBestiary(int idToDelete) {
+        sql.deleteBestiary(idToDelete);
+        load();
+    }
+
+    private void load() {
+        bestiaries = sql.getAllBestiaries();
+
+        spinnerList.clear();
+        for(Bestiary b:bestiaries) {
+            spinnerList.add(b.name);
         }
 
         //
@@ -72,44 +90,20 @@ public class Bestiaries {
             }
         }
 
-        save();
-        return i;
-    }
+        if(bestiaries.size() == 0) {
+            //load srd from web
 
-    public void save() {
+            new DownloadFileFromURL().execute("https://raw.githubusercontent.com/Libco/bestiary5thedition/master/files/5e-SRD-Monsters.json");
 
-        Set<String> bSet = new HashSet<>();
-
-        for(Bestiary b:bestiaries) {
-            bSet.add(b.uri.toString());
         }
 
-        SharedPreferences sharedPref = context.getPreferences(Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putStringSet(context.getString(R.string.bestiaries_save_string),bSet);
-        editor.apply();
-        Log.d(TAG,"Saving " + bestiaries.size() + " bestiaries.");
-    }
-
-    public int load() {
-
-        SharedPreferences sharedPref = context.getPreferences(Context.MODE_PRIVATE);
-        Set<String> bSet = sharedPref.getStringSet(context.getString(R.string.bestiaries_save_string), null);
-
-        if(bSet == null) {
-            Log.d(TAG,"nothing to load");
-            return -1;
-        }
-
-        Log.d(TAG,"Loading " + bSet.size() + " bestiaries.");
-        int i = 0;
-        for(String uri:bSet) {
-            i += importBestiary(Uri.parse(uri));
-        }
-        return i;
     }
 
     /****/
+
+    public void loadMonsterDetails(Monster monster) {
+        sql.loadMonsterDetails(monster);
+    }
 
     public void setSelectedBestiary(int position) {
         if(bestiaries.size() > position && position >= 0) {
@@ -118,6 +112,7 @@ public class Bestiaries {
         }
     }
 
+    //TODO:deprecated propably
     public Monster getMonsterFromName(String name) {
         if(selectedBestiary != null) {
             for (Monster m : selectedBestiary.monsters) {
@@ -162,6 +157,86 @@ public class Bestiaries {
         return bestiaries.size();
     }
 
+    public List<Bestiary> getBestiaries() {
+        return bestiaries;
+    }
 
+    //
+
+    /**
+     * Background Async Task to download file
+     * */
+    class DownloadFileFromURL extends AsyncTask<String, String, String> {
+
+        /**
+         * Downloading file in background thread
+         * */
+        @Override
+        protected String doInBackground(String... f_url) {
+            int count;
+            String strFileContents = "";
+            try {
+                URL url = new URL(f_url[0]);
+                URLConnection conection = url.openConnection();
+                conection.connect();
+
+                // this will be useful so that you can show a tipical 0-100%
+                // progress bar
+                int lenghtOfFile = conection.getContentLength();
+
+                // download the file
+                InputStream input = new BufferedInputStream(url.openStream(),
+                        8192);
+
+                byte data[] = new byte[1024];
+
+                long total = 0;
+
+                while ((count = input.read(data)) != -1) {
+                    total += count;
+                    // publishing the progress....
+                    // After this onProgressUpdate will be called
+                    //publishProgress("" + (int) ((total * 100) / lenghtOfFile));
+
+                    // writing data to string
+                    strFileContents += new String(data, 0, count);
+                }
+
+                // closing streams
+                input.close();
+
+            } catch (Exception e) {
+                Log.e("Error: ", e.getMessage());
+            }
+
+            BestiaryParserJson bestiaryParserJson = new BestiaryParserJson();
+            Bestiary newBestiary = bestiaryParserJson.parse("5e SRD",strFileContents);
+
+
+            sql.addBestiary(newBestiary);
+            load();
+
+            return null;
+        }
+
+        /**
+         * Updating progress bar
+         * */
+        protected void onProgressUpdate(String... progress) {
+            // setting progress percentage
+            //pDialog.setProgress(Integer.parseInt(progress[0]));
+        }
+
+        /**
+         * After completing background task Dismiss the progress dialog
+         * **/
+        @Override
+        protected void onPostExecute(String file_url) {
+            // dismiss the dialog after the file was downloaded
+           // dismissDialog(progress_bar_type);
+
+        }
+
+    }
 
 }
