@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.OpenableColumns;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 
 import java.io.BufferedInputStream;
@@ -19,7 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class Bestiaries {
+public class Bestiaries implements SRD.SRDEvents {
 
     private static final String TAG = "Bestiaries";
 
@@ -32,9 +33,12 @@ public class Bestiaries {
     private Activity context = null;
     private SqlMM sql = null;
 
-    public Bestiaries(Activity context) {
+    private BestiaryEvent bestiaryEvent;
+
+    public Bestiaries(Activity context, BestiaryEvent bestiaryEvent) {
         this.context = context;
         this.sql = new SqlMM(context);
+        this.bestiaryEvent = bestiaryEvent;
 
         load();
     }
@@ -46,11 +50,16 @@ public class Bestiaries {
         Bestiary newBestiary = new Bestiary();
         try {
             newBestiary.name = getFileName(uri);
+
+            showSnackbar("Importing " + newBestiary.name);
+
             newBestiary.uri = uri;
             is = context.getContentResolver().openInputStream(uri);
             newBestiary.monsters = bestiaryParser.parse(is);
 
             sql.addBestiary(newBestiary);
+
+            showSnackbar("Imported " + newBestiary.monsters.size() + " monsters");
 
         } catch (Exception e) {
             //log the exception
@@ -93,10 +102,14 @@ public class Bestiaries {
         if(bestiaries.size() == 0) {
             //load srd from web
 
-            new DownloadFileFromURL().execute("https://raw.githubusercontent.com/Libco/bestiary5thedition/master/files/5e-SRD-Monsters.json");
+            showSnackbar("Downloading 5e SRD");
 
+            SRD srd = new SRD(this);
+            srd.downloadFromWeb();
+            bestiaries.add(srd);
         }
 
+        bestiaryEvent.onBestiaryChange();
     }
 
     /****/
@@ -112,14 +125,29 @@ public class Bestiaries {
         }
     }
 
-    //TODO:deprecated propably
-    public Monster getMonsterFromName(String name) {
-        if(selectedBestiary != null) {
-            for (Monster m : selectedBestiary.monsters) {
-                if (m.name.equals(name))
+   /* public void setSelectedBestiaryById(int id) {
+       for(Bestiary b:bestiaries) {
+           if(b.id == id) {
+               selectedBestiary = b;
+               Log.d(TAG, "bestiary set to: " + selectedBestiary.name);
+               return;
+           }
+       }
+        if(bestiaries.size() > 0) {
+            selectedBestiary = bestiaries.get(0);
+            Log.d(TAG,"Id of bestiary not found. bestiary set to: " + selectedBestiary.name);
+        }
+    }
+*/
+    public Monster getMonsterFromId(int id) {
+        for(Bestiary b: bestiaries) {
+            for (Monster m : b.monsters) {
+                if (m.id == id) {
                     return m;
+                }
             }
         }
+
         return null;
     }
 
@@ -161,82 +189,46 @@ public class Bestiaries {
         return bestiaries;
     }
 
-    //
+    public void srdDownloadFinished() {
 
-    /**
-     * Background Async Task to download file
-     * */
-    class DownloadFileFromURL extends AsyncTask<String, String, String> {
+        for (Bestiary b:bestiaries) {
+            if(b.id == 0) {
 
-        /**
-         * Downloading file in background thread
-         * */
-        @Override
-        protected String doInBackground(String... f_url) {
-            int count;
-            String strFileContents = "";
-            try {
-                URL url = new URL(f_url[0]);
-                URLConnection conection = url.openConnection();
-                conection.connect();
-
-                // this will be useful so that you can show a tipical 0-100%
-                // progress bar
-                int lenghtOfFile = conection.getContentLength();
-
-                // download the file
-                InputStream input = new BufferedInputStream(url.openStream(),
-                        8192);
-
-                byte data[] = new byte[1024];
-
-                long total = 0;
-
-                while ((count = input.read(data)) != -1) {
-                    total += count;
-                    // publishing the progress....
-                    // After this onProgressUpdate will be called
-                    //publishProgress("" + (int) ((total * 100) / lenghtOfFile));
-
-                    // writing data to string
-                    strFileContents += new String(data, 0, count);
+                if(b.monsters.size() > 0) {
+                    showSnackbar("Downloaded " + b.monsters.size() + " 5e SRD monsters");
+                    sql.addBestiary(b);
+                } else {
+                    showSnackbar("Error occurred while downloading 5e SRD");
                 }
-
-                // closing streams
-                input.close();
-
-            } catch (Exception e) {
-                Log.e("Error: ", e.getMessage());
+                break;
             }
-
-            BestiaryParserJson bestiaryParserJson = new BestiaryParserJson();
-            Bestiary newBestiary = bestiaryParserJson.parse("5e SRD",strFileContents);
-
-
-            sql.addBestiary(newBestiary);
-            load();
-
-            return null;
         }
 
-        /**
-         * Updating progress bar
-         * */
-        protected void onProgressUpdate(String... progress) {
-            // setting progress percentage
-            //pDialog.setProgress(Integer.parseInt(progress[0]));
+        spinnerList.clear();
+        for(Bestiary b:bestiaries) {
+            spinnerList.add(b.name);
+        }
+        if(selectedBestiary == null) {
+            if(bestiaries.size() > 0) {
+                selectedBestiary = bestiaries.get(0);
+            }
         }
 
-        /**
-         * After completing background task Dismiss the progress dialog
-         * **/
-        @Override
-        protected void onPostExecute(String file_url) {
-            // dismiss the dialog after the file was downloaded
-           // dismissDialog(progress_bar_type);
+        bestiaryEvent.onBestiaryChange();
 
-        }
 
+    }
+
+    private void showSnackbar(String message) {
+
+        Snackbar snackbar = Snackbar
+                .make(context.findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG);
+
+        snackbar.show();
+    }
+
+    public interface BestiaryEvent {
+        void onBestiaryChange();
     }
 
 }

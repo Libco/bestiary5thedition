@@ -47,13 +47,13 @@ public class MonsterListFragment extends Fragment {
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static MonsterListFragment newInstance(int columnCount) {
+    /*public static MonsterListFragment newInstance(int columnCount) {
         MonsterListFragment fragment = new MonsterListFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
         return fragment;
-    }
+    }*/
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -106,16 +106,32 @@ public class MonsterListFragment extends Fragment {
 
     public void setMonsterList(List<Monster> newMonsterList) {
 
-        if(newMonsterList != monsterList)
-            copyArray(newMonsterList,monsterList);
+        if(newMonsterList == null) {
+            monsterList.clear();
+            monsterListFiltered.clear();
+        } else {
 
-        copyArray(monsterList,monsterListFiltered);
+            if (newMonsterList != monsterList)
+                copyArray(newMonsterList, monsterList);
+
+            copyArray(monsterList, monsterListFiltered);
+        }
 
         Log.d(TAG,"setMonsterList(); size: " + monsterListFiltered.size());
 
 
-        if(recyclerViewAdapter != null)
-            recyclerViewAdapter.notifyDataSetChanged();
+        if(recyclerViewAdapter != null) {
+            try {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        recyclerViewAdapter.notifyDataSetChanged();
+                    }
+                });
+            } catch (NullPointerException e) {
+                //
+            }
+        }
     }
 
     public void search(String string) {

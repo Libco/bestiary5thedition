@@ -153,10 +153,11 @@ public class SqlMM extends SQLiteOpenHelper {
             trait_values.put(TABLE_M_TRAIT_MONSTER_ID, monsterID);
             trait_values.put(TABLE_M_TRAIT_TYPE, type);
             trait_values.put(TABLE_M_TRAIT_NAME, trait.name);
-            String text = "";
+            StringBuilder sb = new StringBuilder();
             for (String t:trait.text) {
-                text = t + "\n";
+                sb.append(t).append("\n");
             }
+            String text = sb.toString();
             trait_values.put(TABLE_M_TRAIT_TEXT, text);
             trait_values.put(TABLE_M_TRAIT_ATTACK, trait.attack);
 
@@ -215,9 +216,9 @@ public class SqlMM extends SQLiteOpenHelper {
                 long idM = db.insertOrThrow(TABLE_M, null, monster_values);
 
                 insertTrait(m.traits,idM, 0); //type 0 is traits
-                insertTrait(m.actions,idM, 1); //type 0 is actions
-                insertTrait(m.legendaryActions,idM, 2); //type 0 is legendary actions
-                insertTrait(m.reactions,idM, 3); //type 0 is reactions
+                insertTrait(m.actions,idM, 1); //type 1 is actions
+                insertTrait(m.legendaryActions,idM, 2); //type 2 is legendary actions
+                insertTrait(m.reactions,idM, 3); //type 3 is reactions
 
             }
 

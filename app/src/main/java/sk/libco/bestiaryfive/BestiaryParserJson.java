@@ -21,6 +21,10 @@ public class BestiaryParserJson {
                 try {
                     JSONObject jsonobject = jsonarray.getJSONObject(i);
 
+                    if(jsonobject.has("license"))
+                        continue;
+
+
                     Monster m = new Monster();
                     m.name = jsonobject.getString("name");
                     m.size = jsonobject.getString("size");

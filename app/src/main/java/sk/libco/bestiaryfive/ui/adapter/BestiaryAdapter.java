@@ -54,10 +54,11 @@ public class BestiaryAdapter extends RecyclerView.Adapter<BestiaryAdapter.ViewHo
         holder.mDeleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-             bestiaries.deleteBestiary(b.id);
-             notifyDataSetChanged();
+                bestiaries.deleteBestiary(b.id);
+                notifyDataSetChanged();
             }
         });
+
     }
 
     @Override
