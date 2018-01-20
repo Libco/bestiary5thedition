@@ -216,7 +216,8 @@ public class MainActivity extends AppCompatActivity implements MonsterListFragme
                     if (ft != null) {
                         ft.addToBackStack(null);
                         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                        ft.commit();
+                        //ft.commit();
+                        ft.commitAllowingStateLoss();
                     }
                 }
 
@@ -283,8 +284,10 @@ public class MainActivity extends AppCompatActivity implements MonsterListFragme
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.fragment_container, newFragment, null);
-        if(commit)
-            ft.commit();
+        if(commit) {
+            //ft.commit();
+            ft.commitAllowingStateLoss();
+        }
 
         return ft;
 
@@ -304,29 +307,34 @@ public class MainActivity extends AppCompatActivity implements MonsterListFragme
 
     private void setMonsterToView(Monster monster) {
 
-        if(monster == null) {
-            Log.d(TAG,"Monster to show is null");
-            return;
-        }
-
-        selectedMonster = monster.id;
-        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-
-        if (!(currentFragment instanceof MainActivityFragment)) {
-            Log.d(TAG,"Showing monster fragment");
-            if(monsterFragment == null)
-                monsterFragment = new MainActivityFragment();
-
-            FragmentTransaction ft = replaceFragment(monsterFragment, false);
-            if(ft != null) {
-                ft.addToBackStack(null);
-                ft.commit();
+        try {
+            if (monster == null || monster.id == null) {
+                Log.d(TAG, "Monster to show is null");
+                return;
             }
-        } else {
-            monsterFragment = (MainActivityFragment) currentFragment;
+
+            selectedMonster = monster.id;
+            Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+
+            if (!(currentFragment instanceof MainActivityFragment)) {
+                Log.d(TAG, "Showing monster fragment");
+                if (monsterFragment == null)
+                    monsterFragment = new MainActivityFragment();
+
+                FragmentTransaction ft = replaceFragment(monsterFragment, false);
+                if (ft != null) {
+                    ft.addToBackStack(null);
+                    //ft.commit();
+                    ft.commitAllowingStateLoss();
+                }
+            } else {
+                monsterFragment = (MainActivityFragment) currentFragment;
+            }
+            bestiaries.loadMonsterDetails(monster);
+            monsterFragment.setMonsterToView(monster);
+        } catch (Exception e) {
+            Log.d(TAG, "cannot set monster to view:" + e.toString());
         }
-        bestiaries.loadMonsterDetails(monster);
-        monsterFragment.setMonsterToView(monster);
 
     }
 

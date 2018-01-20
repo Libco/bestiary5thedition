@@ -204,19 +204,7 @@ public class Bestiaries implements SRD.SRDEvents {
             }
         }
 
-        spinnerList.clear();
-        for(Bestiary b:bestiaries) {
-            spinnerList.add(b.name);
-        }
-        if(selectedBestiary == null) {
-            if(bestiaries.size() > 0) {
-                selectedBestiary = bestiaries.get(0);
-            }
-        }
-
-        bestiaryEvent.onBestiaryChange();
-
-
+        load();
     }
 
     private void showSnackbar(String message) {
