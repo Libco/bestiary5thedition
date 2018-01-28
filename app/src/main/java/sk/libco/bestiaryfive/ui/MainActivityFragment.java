@@ -9,15 +9,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import sk.libco.bestiaryfive.ui.adapter.FeatureAdapter;
 import sk.libco.bestiaryfive.Monster;
 import sk.libco.bestiaryfive.R;
+import sk.libco.bestiaryfive.ui.adapter.FeatureAdapter;
 
 /**
  * Fragment for showing a single monster
@@ -25,23 +24,19 @@ import sk.libco.bestiaryfive.R;
 public class MainActivityFragment extends Fragment {
 
     private static final String TAG = "MainActivityFragment";
-
+    List<Monster.Trait> features = new ArrayList<>();
+    List<Monster.Trait> traits = new ArrayList<>();
+    List<Monster.Trait> actions = new ArrayList<>();
+    List<Monster.Trait> legendaryActions = new ArrayList<>();
     private LinearLayout linearLayoutLegendaryActions;
     private LinearLayout linearLayoutReactions;
     private LinearLayout linearLayoutDescription;
-
     //recyclerviews
     private FeatureAdapter mAdapterFeatures;
     private FeatureAdapter mAdapterFeats;
     private FeatureAdapter mAdapterActions;
     private FeatureAdapter mAdapterLegendaryActions;
     private FeatureAdapter mAdapterReactions;
-
-    List<Monster.Trait> features = new ArrayList<>();
-    List<Monster.Trait> traits = new ArrayList<>();
-    List<Monster.Trait> actions = new ArrayList<>();
-    List<Monster.Trait> legendaryActions = new ArrayList<>();
-
     //
     private Monster selectedMonster = null;
     private View view = null;
@@ -56,13 +51,11 @@ public class MainActivityFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_main, container, false);
 
 
-        /**
-         * Features Recycler view
-         */
+        //Features Recycler view
         RecyclerView mRecyclerViewFeatures;
         RecyclerView.LayoutManager mLayoutManagerFeatures;
 
-        mRecyclerViewFeatures = (RecyclerView) view.findViewById(R.id.recyclerViewFeatures);
+        mRecyclerViewFeatures = view.findViewById(R.id.recyclerViewFeatures);
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
@@ -81,13 +74,11 @@ public class MainActivityFragment extends Fragment {
         mAdapterFeatures = new FeatureAdapter(features, R.layout.feature_adapter_view);
         mRecyclerViewFeatures.setAdapter(mAdapterFeatures);
 
-        /**
-         * Feats Recycler view
-         */
+        //Feats Recycler view
         RecyclerView mRecyclerViewFeats;
         RecyclerView.LayoutManager mLayoutManagerFeats;
 
-        mRecyclerViewFeats = (RecyclerView) view.findViewById(R.id.recyclerViewFeats);
+        mRecyclerViewFeats = view.findViewById(R.id.recyclerViewFeats);
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
@@ -102,13 +93,12 @@ public class MainActivityFragment extends Fragment {
         mAdapterFeats = new FeatureAdapter(traits, R.layout.trait_adapter_view);
         mRecyclerViewFeats.setAdapter(mAdapterFeats);
 
-        /**
-         * Actions Recycler view
-         */
+
+        //Actions Recycler view
         RecyclerView mRecyclerViewActions;
         RecyclerView.LayoutManager mLayoutManagerActions;
 
-        mRecyclerViewActions = (RecyclerView) view.findViewById(R.id.recyclerViewActions);
+        mRecyclerViewActions = view.findViewById(R.id.recyclerViewActions);
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
@@ -123,13 +113,12 @@ public class MainActivityFragment extends Fragment {
         mAdapterActions = new FeatureAdapter(actions, R.layout.trait_adapter_view);
         mRecyclerViewActions.setAdapter(mAdapterActions);
 
-        /**
-         * Reactions Recycler view
-         */
+
+        //Reactions Recycler view
         RecyclerView mRecyclerViewReactions;
         RecyclerView.LayoutManager mLayoutManagerReactions;
 
-        mRecyclerViewReactions = (RecyclerView) view.findViewById(R.id.recyclerViewReactions);
+        mRecyclerViewReactions = view.findViewById(R.id.recyclerViewReactions);
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
@@ -144,13 +133,12 @@ public class MainActivityFragment extends Fragment {
         mAdapterReactions = new FeatureAdapter(null, R.layout.trait_adapter_view);
         mRecyclerViewReactions.setAdapter(mAdapterReactions);
 
-        /**
-         * Legendary Actions Recycler view
-         */
+
+        //Legendary Actions Recycler view
         RecyclerView mRecyclerViewLegendaryActions;
         RecyclerView.LayoutManager mLayoutManagerLegendaryActions;
 
-        mRecyclerViewLegendaryActions = (RecyclerView) view.findViewById(R.id.recyclerViewLegendaryActions);
+        mRecyclerViewLegendaryActions = view.findViewById(R.id.recyclerViewLegendaryActions);
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
@@ -165,12 +153,12 @@ public class MainActivityFragment extends Fragment {
         mAdapterLegendaryActions = new FeatureAdapter(legendaryActions, R.layout.trait_adapter_view);
         mRecyclerViewLegendaryActions.setAdapter(mAdapterLegendaryActions);
 
-        /****/
-        linearLayoutLegendaryActions = (LinearLayout) view.findViewById(R.id.linearViewLegendary);
-        linearLayoutReactions = (LinearLayout) view.findViewById(R.id.linearViewReactions);
-        linearLayoutDescription = (LinearLayout) view.findViewById(R.id.linearViewDescription);
+        //
+        linearLayoutLegendaryActions = view.findViewById(R.id.linearViewLegendary);
+        linearLayoutReactions = view.findViewById(R.id.linearViewReactions);
+        linearLayoutDescription = view.findViewById(R.id.linearViewDescription);
 
-        /****/
+        //
         Log.d(TAG,"onCreateView initialized");
         setMonsterToView(selectedMonster);
 
@@ -241,14 +229,14 @@ public class MainActivityFragment extends Fragment {
 
     private void setTextView(int textView, String text) {
         if(view != null) {
-            TextView textViewType = (TextView) view.findViewById(textView);
+            TextView textViewType = view.findViewById(textView);
             textViewType.setText(text);
         }
     }
 
     private void setTextViewIfVisible(int textView, String text, LinearLayout itemView) {
         if(view != null && text != null && !text.isEmpty()) {
-            TextView textViewType = (TextView) view.findViewById(textView);
+            TextView textViewType = view.findViewById(textView);
             textViewType.setText(text);
             itemView.setVisibility(View.VISIBLE);
         } else {

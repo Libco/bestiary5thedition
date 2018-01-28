@@ -44,4 +44,5 @@
     <string name="title_activity_info">InfoActivity</string>
     <string name="tab_text_1">Info</string>
     <string name="tab_text_2">Licence</string>
+    <string name="title_activity_import">Imported manuals</string>
 </resources>

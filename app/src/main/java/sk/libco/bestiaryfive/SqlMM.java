@@ -8,21 +8,19 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
 public class SqlMM extends SQLiteOpenHelper {
 
     private static final String TAG = "SQLMM";
-
     // If you change the database schema, you must increment the database version.
-    public static final int DATABASE_VERSION = 1;
-    public static final String DATABASE_NAME = "mm.db";
-
+    private static final int DATABASE_VERSION = 1;
+    private static final String DATABASE_NAME = "mm.db";
     private static final String TABLE_MM = "bestiary";
     private static final String TABLE_MM_ID = "id";
     private static final String TABLE_MM_NAME = "name";
-
     private static final String TABLE_M = "monster";
     private static final String TABLE_M_ID = "id";
     private static final String TABLE_M_BESTIARY_ID = "bestiary_id";
@@ -56,7 +54,6 @@ public class SqlMM extends SQLiteOpenHelper {
     //private static final String TABLE_M_REACTIONS = "reactions";
     private static final String TABLE_M_SPELLS = "spells";
     private static final String TABLE_M_DESCRIPTION = "description";
-
     private static final String TABLE_M_TRAIT = "trait";
     private static final String TABLE_M_TRAIT_ID = "id";
     private static final String TABLE_M_TRAIT_TYPE = "type";
@@ -64,11 +61,24 @@ public class SqlMM extends SQLiteOpenHelper {
     private static final String TABLE_M_TRAIT_NAME = "name";
     private static final String TABLE_M_TRAIT_TEXT = "text";
     private static final String TABLE_M_TRAIT_ATTACK = "attack";
+    private static SqlMM mInstance = null;
 
 
-    public SqlMM(Context context) {
+    private SqlMM(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
+
+    static SqlMM getInstance(Context ctx) {
+
+        // Use the application context, which will ensure that you
+        // don't accidentally leak an Activity's context.
+        // See this article for more information: http://bit.ly/6LRzfx
+        if (mInstance == null) {
+            mInstance = new SqlMM(ctx.getApplicationContext());
+        }
+        return mInstance;
+    }
+
     public void onCreate(SQLiteDatabase db) {
 
         Log.d(TAG,"Creating db");
@@ -143,9 +153,7 @@ public class SqlMM extends SQLiteOpenHelper {
 
     /*********************************************************************/
 
-    private void insertTrait(List<Monster.Trait> traits, long monsterID, int type) throws Exception{
-
-        SQLiteDatabase db = getWritableDatabase();
+    private void insertTrait(SQLiteDatabase db, List<Monster.Trait> traits, long monsterID, int type) throws Exception {
 
         for (Monster.Trait trait : traits) {
             ContentValues trait_values = new ContentValues();
@@ -164,11 +172,10 @@ public class SqlMM extends SQLiteOpenHelper {
             db.insertOrThrow(TABLE_M_TRAIT, null, trait_values);
         }
 
-
     }
 
     // Insert a post into the database
-    public void addBestiary(Bestiary bestiary) {
+    void addBestiary(Bestiary bestiary) {
         // Create and/or open the database for writing
         SQLiteDatabase db = getWritableDatabase();
 
@@ -215,10 +222,10 @@ public class SqlMM extends SQLiteOpenHelper {
 
                 long idM = db.insertOrThrow(TABLE_M, null, monster_values);
 
-                insertTrait(m.traits,idM, 0); //type 0 is traits
-                insertTrait(m.actions,idM, 1); //type 1 is actions
-                insertTrait(m.legendaryActions,idM, 2); //type 2 is legendary actions
-                insertTrait(m.reactions,idM, 3); //type 3 is reactions
+                insertTrait(db, m.traits, idM, 0); //type 0 is traits
+                insertTrait(db, m.actions, idM, 1); //type 1 is actions
+                insertTrait(db, m.legendaryActions, idM, 2); //type 2 is legendary actions
+                insertTrait(db, m.reactions, idM, 3); //type 3 is reactions
 
             }
 
@@ -229,18 +236,19 @@ public class SqlMM extends SQLiteOpenHelper {
             db.endTransaction();
         }
 
+
         Log.d(TAG,"Added bestiary to db");
 
     }
 
-    public void deleteBestiary(int idToDelete) {
+    void deleteBestiary(int idToDelete) {
 
         SQLiteDatabase db = getWritableDatabase();
         db.delete(TABLE_MM, TABLE_MM_ID+"=?", new String[] { String.valueOf(idToDelete) });
 
     }
 
-    public List<Bestiary> getAllBestiaries() {
+    List<Bestiary> getAllBestiaries() {
         List<Bestiary> bestiaries = new ArrayList<>();
         // Select All Query
         String selectQuery = "SELECT " + TABLE_MM_ID + ", " + TABLE_MM_NAME + " FROM " + TABLE_MM;
@@ -321,9 +329,13 @@ public class SqlMM extends SQLiteOpenHelper {
                     } while (cursorM.moveToNext());
                 }
 
+                cursorM.close();
+
                 bestiaries.add(newBestiary);
             } while (cursorMM.moveToNext());
         }
+
+        cursorMM.close();
 
         // return contact list
         return bestiaries;
@@ -370,16 +382,15 @@ public class SqlMM extends SQLiteOpenHelper {
 
                 if(trait != null) {
                     trait.name = cursorMT.getString(1);
-
                     String texts[] = cursorMT.getString(2).split("\n");
-                    for (String text:texts) {
-                        trait.text.add(text);
-                    }
+                    trait.text.addAll(Arrays.asList(texts));
                     trait.attack = cursorMT.getString(3);
                 }
 
             } while (cursorMT.moveToNext());
         }
+
+        cursorMT.close();
 
         monster.isDetailsLoaded = true;
 

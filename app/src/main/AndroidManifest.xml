@@ -26,6 +26,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="sk.libco.bestiaryfive.ui.MainActivity" />
         </activity>
+        <activity
+            android:name=".ui.ImportActivity"
+            android:label="@string/title_activity_import"
+            android:parentActivityName=".ui.MainActivity"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="sk.libco.bestiaryfive.ui.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

@@ -9,7 +9,7 @@
     >
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/info_licence_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -32,7 +32,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3">
+        app:layout_constraintTop_toBottomOf="@+id/info_licence_label">
 
         <TextView
             android:id="@+id/textView6"

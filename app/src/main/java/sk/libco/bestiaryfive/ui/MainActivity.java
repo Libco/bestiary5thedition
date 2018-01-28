@@ -1,16 +1,13 @@
 package sk.libco.bestiaryfive.ui;
 
-import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.support.design.widget.Snackbar;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -22,52 +19,63 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
+import java.util.List;
+
 import sk.libco.bestiaryfive.Bestiaries;
 import sk.libco.bestiaryfive.Monster;
 import sk.libco.bestiaryfive.R;
-import sk.libco.bestiaryfive.SqlMM;
 
 public class MainActivity extends AppCompatActivity implements MonsterListFragment.OnListFragmentInteractionListener, Bestiaries.BestiaryEvent {
 
     private static final String TAG = "MainActivity";
 
-    boolean addList = false;
+    //boolean addList = false;
 
     Spinner spinner;
     ArrayAdapter<String> spinnerDataAdapter;
-
-    private MenuItem searchItem;
-    private SearchView searchView = null;
-    private SearchView.OnQueryTextListener queryTextListener;
-
-    private Bestiaries bestiaries;
-    //private AsyncTask parseTask;
-
     MainActivityInfoFragment infoFragment = null; //fragment for when nothing is imported
     MainActivityFragment monsterFragment = null; //fragment for single monster
     MonsterListFragment monsterListFragment = null; //fragment for monster list
-
+    private MenuItem searchItem;
+    //private AsyncTask parseTask;
+    private SearchView searchView = null;
+    private SearchView.OnQueryTextListener queryTextListener;
+    private Bestiaries bestiaries;
     private int selectedMonster = -1;
     private int selectedBestiary = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        //
+        bestiaries = new Bestiaries(this, this);
+
+        //Restore state
+        if (savedInstanceState != null) {
+            Log.d(TAG, "Restoring Instance State");
+            // Restore state members from saved instance
+            selectedMonster = savedInstanceState.getInt("selected_monster");
+            selectedBestiary = savedInstanceState.getInt("selected_bestiary");
+        }
+        selectedBestiary = bestiaries.setSelectedBestiary(selectedBestiary);
+
+
+        //UI
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        /****/
-        bestiaries = new Bestiaries(this, this);
+        //Set toolbar
 
-        /** Set toolbar **/
-        try {
-            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-            setSupportActionBar(toolbar);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-        } catch (NullPointerException e){
-            Log.e(TAG,"Toolbar error: " + e.toString());
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null)
+            actionBar.setDisplayShowTitleEnabled(false);
+        else {
+            Log.e(TAG, "Toolbar error.");
         }
 
-        /** Toolbar spinner **/
+        //Toolbar spinner
         spinner = findViewById(R.id.spinner_nav);
 
         //list.add("Monster Manual");
@@ -75,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements MonsterListFragme
                 android.R.layout.simple_spinner_item, bestiaries.spinnerList);
         spinnerDataAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(spinnerDataAdapter);
-        //spinner.setSelection(0, false);
+        spinner.setSelection(selectedBestiary, false);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
@@ -89,26 +97,20 @@ public class MainActivity extends AppCompatActivity implements MonsterListFragme
 
         });
 
-        if (savedInstanceState != null) {
-            Log.d(TAG, "Restoring Instance State");
-            // Restore state members from saved instance
-            selectedMonster = savedInstanceState.getInt("selected_monster");
-            selectedBestiary = savedInstanceState.getInt("selected_bestiary");
-            //bestiaries.setSelectedBestiary(selectedBestiary);
-        }
 
-        /** fragment **/
-        //setFragment();
+        //fragment
+        setFragment();
 
     }
 
     @Override
     protected void onSaveInstanceState(Bundle savedInstanceState) {
 
+        savedInstanceState.putInt("selected_bestiary", selectedBestiary);
+
         if(selectedMonster > 0) {
             Log.d(TAG,"saving selected monster: " + selectedMonster);
             savedInstanceState.putInt("selected_monster", selectedMonster);
-            savedInstanceState.putInt("selected_bestiary", selectedBestiary);
         }
 
         // Always call the superclass so it can save the view hierarchy state
@@ -161,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements MonsterListFragme
         if (searchItem != null) {
             searchView = (SearchView) searchItem.getActionView();
         }
-        if (searchView != null) {
+        if (searchView != null && searchManager != null) {
             searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 
             queryTextListener = new SearchView.OnQueryTextListener() {
@@ -206,25 +208,13 @@ public class MainActivity extends AppCompatActivity implements MonsterListFragme
                 // Not implemented here
                 return false;
             case R.id.import_file:
-
-                Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-
-                if (!(currentFragment instanceof BestiaryImportFragment)) {
-                    BestiaryImportFragment bestiaryImportFragment = new BestiaryImportFragment();
-                    bestiaryImportFragment.setBestiaries(bestiaries);
-                    FragmentTransaction ft = replaceFragment(bestiaryImportFragment, false);
-                    if (ft != null) {
-                        ft.addToBackStack(null);
-                        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                        //ft.commit();
-                        ft.commitAllowingStateLoss();
-                    }
-                }
-
+                Intent intentImport = new Intent(this, ImportActivity.class);
+                startActivity(intentImport);
                 return true;
             case R.id.help:
                 Intent intent = new Intent(this, InfoActivity.class);
                 startActivity(intent);
+                return true;
             default:
                 break;
         }
@@ -239,27 +229,30 @@ public class MainActivity extends AppCompatActivity implements MonsterListFragme
         //
         Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
 
-        if(selectedMonster > 0) {
+        //create list fragment
+        if (!(currentFragment instanceof MonsterListFragment)) {
+            //if(monsterListFragment == null) {
+            monsterListFragment = new MonsterListFragment();
+            //}
+        } else {
+            monsterListFragment = (MonsterListFragment) currentFragment;
+        }
+
+        //if(bestiaries != null && bestiaries.selectedBestiary != null)
+        //{
+        //    monsterListFragment.setMonsterList(bestiaries.selectedBestiary.monsters);
+        //}
+        //
+
+        if (selectedMonster > 0 && bestiaries != null) {
             setMonsterToView(bestiaries.getMonsterFromId(selectedMonster));
             return;
         }
 
-        if(bestiaries.getBestiariesCount() > 0) {
+        if (bestiaries != null && bestiaries.getBestiariesCount() > 0) {
 
             if (!(currentFragment instanceof MonsterListFragment)) {
-                Log.d(TAG,"Showing monsterList fragment");
-                if(monsterListFragment == null) {
-                    monsterListFragment = new MonsterListFragment();
-                }
-
-                replaceFragment(monsterListFragment,true);
-            } else {
-                monsterListFragment = (MonsterListFragment) currentFragment;
-            }
-
-            if(monsterListFragment != null && bestiaries != null && bestiaries.selectedBestiary != null)
-            {
-                monsterListFragment.setMonsterList(bestiaries.selectedBestiary.monsters);
+                replaceFragment(monsterListFragment, true);
             }
 
         } else {
@@ -318,8 +311,8 @@ public class MainActivity extends AppCompatActivity implements MonsterListFragme
 
             if (!(currentFragment instanceof MainActivityFragment)) {
                 Log.d(TAG, "Showing monster fragment");
-                if (monsterFragment == null)
-                    monsterFragment = new MainActivityFragment();
+                //if (monsterFragment == null)
+                monsterFragment = new MainActivityFragment();
 
                 FragmentTransaction ft = replaceFragment(monsterFragment, false);
                 if (ft != null) {
@@ -351,6 +344,16 @@ public class MainActivity extends AppCompatActivity implements MonsterListFragme
     }
 
     @Override
+    public List<Monster> getMonsterList() {
+
+        if (bestiaries != null && bestiaries.selectedBestiary != null) {
+            selectedMonster = -1;
+            return bestiaries.selectedBestiary.monsters;
+        }
+        return null;
+    }
+
+    @Override
     public void onBestiaryChange() {
         if(spinnerDataAdapter != null)
             runOnUiThread(new Runnable() {
@@ -361,7 +364,7 @@ public class MainActivity extends AppCompatActivity implements MonsterListFragme
             });
 
         if(bestiaries != null && bestiaries.selectedBestiary == null) {
-            selectBestiary(0);
+            selectBestiary(selectedBestiary);
         } else {
             if(monsterListFragment != null)
                 monsterListFragment.setMonsterList(null);

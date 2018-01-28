@@ -1,7 +1,6 @@
 package sk.libco.bestiaryfive;
 
 import android.os.AsyncTask;
-import android.support.design.widget.Snackbar;
 import android.util.Log;
 
 import java.io.BufferedInputStream;
@@ -11,6 +10,7 @@ import java.net.URLConnection;
 
 public class SRD extends Bestiary{
 
+    static boolean downloadInProgress = false;
     SRDEvents srdEvents;
 
     public SRD(SRDEvents srdEvents) {
@@ -19,20 +19,36 @@ public class SRD extends Bestiary{
         name = "5e SRD";
     }
 
-    public void downloadFromWeb() {
-        new DownloadFileFromURL().execute("https://raw.githubusercontent.com/Libco/bestiary5thedition/master/files/5e-SRD-Monsters.json");
+    void downloadFromWeb() {
+        if (downloadInProgress) {
+            return;
+        }
+
+        downloadInProgress = true;
+        new DownloadFileFromURL(this).execute("https://raw.githubusercontent.com/Libco/bestiary5thedition/master/files/5e-SRD-Monsters.json");
+    }
+
+    public interface SRDEvents {
+        void srdDownloadFinished();
     }
 
     /**
      * Background Async Task to download file
      * */
-    private class DownloadFileFromURL extends AsyncTask<String, String, String> {
+    private static class DownloadFileFromURL extends AsyncTask<String, String, String> {
+
+        private final SRD srd;
+
+        DownloadFileFromURL(SRD srd) {
+            this.srd = srd;
+        }
 
         /**
          * Downloading file in background thread
          * */
         @Override
         protected String doInBackground(String... f_url) {
+
             int count;
             String strFileContents = "";
             try {
@@ -41,7 +57,7 @@ public class SRD extends Bestiary{
                 URLConnection conection = url.openConnection();
                 conection.connect();
 
-                // this will be useful so that you can show a tipical 0-100%
+                //  0-100%
                 // progress bar
                 int lenghtOfFile = conection.getContentLength();
 
@@ -73,10 +89,10 @@ public class SRD extends Bestiary{
             BestiaryParserJson bestiaryParserJson = new BestiaryParserJson();
             Bestiary b = bestiaryParserJson.parse("5e SRD",strFileContents);
             if(b != null) {
-                id = b.id;
-                name = b.name;
-                uri = b.uri;
-                monsters = b.monsters;
+                srd.id = b.id;
+                srd.name = b.name;
+                srd.uri = b.uri;
+                srd.monsters = b.monsters;
             }
 
             return "";
@@ -97,13 +113,10 @@ public class SRD extends Bestiary{
         protected void onPostExecute(String str) {
             // dismiss the dialog after the file was downloaded
             // dismissDialog(progress_bar_type);
-            srdEvents.srdDownloadFinished();
+            downloadInProgress = false;
+            srd.srdEvents.srdDownloadFinished();
         }
 
-    }
-
-    public interface SRDEvents {
-        void srdDownloadFinished();
     }
 
 }

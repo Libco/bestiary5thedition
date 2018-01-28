@@ -23,7 +23,7 @@ public class MainActivityInfoFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main_nothing_loaded, container, false);
 
-        TextView textViewInfo = (TextView) view.findViewById(R.id.textViewInfo);
+        TextView textViewInfo = view.findViewById(R.id.textViewInfo);
         textViewInfo.setMovementMethod(LinkMovementMethod.getInstance());
         return view;
     }

@@ -1,18 +1,16 @@
 package sk.libco.bestiaryfive.ui.adapter;
 
-import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.List;
+
 import sk.libco.bestiaryfive.Monster;
 import sk.libco.bestiaryfive.R;
 import sk.libco.bestiaryfive.ui.MonsterListFragment;
-
-import java.util.List;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link Monster} and makes a call to the
@@ -68,18 +66,18 @@ public class MonsterListRecyclerViewAdapter extends RecyclerView.Adapter<Monster
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public final View mView;
-        public final TextView mIdView;
-        public final TextView mContentView;
-        public final TextView mCrView;
-        public Monster mItem;
+        final View mView;
+        final TextView mIdView;
+        final TextView mContentView;
+        final TextView mCrView;
+        Monster mItem;
 
-        public ViewHolder(View view) {
+        ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.id);
-            mContentView = (TextView) view.findViewById(R.id.content);
-            mCrView = (TextView) view.findViewById(R.id.textViewCR);
+            mIdView = view.findViewById(R.id.id);
+            mContentView = view.findViewById(R.id.content);
+            mCrView = view.findViewById(R.id.textViewCR);
         }
 
         @Override

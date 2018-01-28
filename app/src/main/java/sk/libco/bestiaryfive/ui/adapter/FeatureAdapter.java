@@ -17,14 +17,6 @@ public class FeatureAdapter extends RecyclerView.Adapter<FeatureAdapter.ViewHold
 
     private int type;
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        public View view;
-        public ViewHolder(View v) {
-            super(v);
-            view = v;
-        }
-    }
-
     public FeatureAdapter(List<Monster.Trait> traitList, int type) {
         this.traitList = traitList;
         this.type = type;
@@ -47,7 +39,7 @@ public class FeatureAdapter extends RecyclerView.Adapter<FeatureAdapter.ViewHold
        // TextView featureLabel = (TextView) customViewHolder.view.findViewById(R.id.textViewLabelFeature);
        // featureLabel.setText(traitList.get(i).name);
 
-        TextView feature = (TextView) customViewHolder.view.findViewById(R.id.textViewFeature);
+        TextView feature = customViewHolder.view.findViewById(R.id.textViewFeature);
 
         Monster.Trait trait = traitList.get(i);
 
@@ -74,5 +66,14 @@ public class FeatureAdapter extends RecyclerView.Adapter<FeatureAdapter.ViewHold
     @Override
     public long getItemId(int position) {
         return position;
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        public View view;
+
+        public ViewHolder(View v) {
+            super(v);
+            view = v;
+        }
     }
 }

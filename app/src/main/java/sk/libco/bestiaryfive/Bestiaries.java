@@ -1,8 +1,6 @@
 package sk.libco.bestiaryfive;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -10,24 +8,17 @@ import android.provider.OpenableColumns;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class Bestiaries implements SRD.SRDEvents {
 
     private static final String TAG = "Bestiaries";
-
-    private List<Bestiary> bestiaries = null;
     public Bestiary selectedBestiary = null;
-
     public List<String> spinnerList = new ArrayList<>();
+    private List<Bestiary> bestiaries = null;
     private BestiaryParser bestiaryParser = new BestiaryParser();
 
     private Activity context = null;
@@ -37,13 +28,13 @@ public class Bestiaries implements SRD.SRDEvents {
 
     public Bestiaries(Activity context, BestiaryEvent bestiaryEvent) {
         this.context = context;
-        this.sql = new SqlMM(context);
+        this.sql = SqlMM.getInstance(context);
         this.bestiaryEvent = bestiaryEvent;
 
         load();
     }
 
-    public int importBestiary(Uri uri) {
+    int importBestiary(Uri uri) {
 
         int i = 0;
         InputStream is = null;
@@ -73,8 +64,6 @@ public class Bestiaries implements SRD.SRDEvents {
                 }
             }
         }
-
-        load();
 
         return i;
     }
@@ -118,10 +107,13 @@ public class Bestiaries implements SRD.SRDEvents {
         sql.loadMonsterDetails(monster);
     }
 
-    public void setSelectedBestiary(int position) {
+    public int setSelectedBestiary(int position) {
         if(bestiaries.size() > position && position >= 0) {
             selectedBestiary = bestiaries.get(position);
             Log.d(TAG,"bestiary set to: " + selectedBestiary.name);
+            return position;
+        } else {
+            return 0;
         }
     }
 
@@ -217,6 +209,37 @@ public class Bestiaries implements SRD.SRDEvents {
 
     public interface BestiaryEvent {
         void onBestiaryChange();
+    }
+
+
+    //
+
+    public static class ParseTask extends AsyncTask<Uri, Integer, Integer> {
+
+        private final Bestiaries bestiaries;
+
+        public ParseTask(Bestiaries bestiaries) {
+            this.bestiaries = bestiaries;
+        }
+
+        protected Integer doInBackground(Uri... uris) {
+
+            int monstersParsed = 0;
+
+            for (Uri uri : uris) {
+                monstersParsed += bestiaries.importBestiary(uri);
+            }
+
+            return monstersParsed;
+        }
+
+        protected void onProgressUpdate(Integer... progress) {
+
+        }
+
+        protected void onPostExecute(Integer result) {
+            bestiaries.load();
+        }
     }
 
 }
