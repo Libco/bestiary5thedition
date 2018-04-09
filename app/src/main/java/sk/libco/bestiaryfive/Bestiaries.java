@@ -110,6 +110,9 @@ public class Bestiaries implements SRD.SRDEvents {
     public int setSelectedBestiary(int position) {
         if(bestiaries.size() > position && position >= 0) {
             selectedBestiary = bestiaries.get(position);
+            if (selectedBestiary.id >= 0 && selectedBestiary.monsters.size() == 0) {
+                selectedBestiary.monsters = sql.getMonstersForBestiary(selectedBestiary.id);
+            }
             Log.d(TAG,"bestiary set to: " + selectedBestiary.name);
             return position;
         } else {
@@ -177,8 +180,34 @@ public class Bestiaries implements SRD.SRDEvents {
         return bestiaries.size();
     }
 
+    public int getBestiariesWithoutAllCount() {
+        int count = 0;
+        if (bestiaries != null) {
+            for (Bestiary b : bestiaries) {
+                if (b.id >= 0) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
     public List<Bestiary> getBestiaries() {
         return bestiaries;
+    }
+
+    public List<Bestiary> getBestiariesWithoutAll() {
+
+        List<Bestiary> bList = new ArrayList<>();
+        if (bestiaries != null) {
+            for (Bestiary b : bestiaries) {
+                if (b.id >= 0) {
+                    bList.add(b);
+                }
+            }
+        }
+
+        return bList;
     }
 
     public void srdDownloadFinished() {

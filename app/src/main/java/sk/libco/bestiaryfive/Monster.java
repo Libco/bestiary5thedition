@@ -1,6 +1,7 @@
 package sk.libco.bestiaryfive;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Monster {
@@ -104,6 +105,12 @@ public class Monster {
         return typeString;
     }
 
+    public final static List<String> CR_ORDER = Arrays.asList("0", "1/8", "1/4", "1/2", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30");
+
+    public static String getAbilityWithBonus(String ability) {
+        return String.format("%s (%s)", ability, getBonus(ability));
+    }
+
     public List<Trait> getFeatures() {
 
         List<Trait> featureList = new ArrayList<>();
@@ -135,4 +142,27 @@ public class Monster {
             featureList.add(trait);
         }
     }
+
+    private static String getBonus(String stat) {
+        try {
+            int statInt = Integer.parseInt(stat);
+            int statBonus = (statInt - 10) / 2;
+            if (statBonus > 5) {
+                statBonus = 5;
+            } else if (statBonus < -5) {
+                statBonus = -5;
+            }
+            //
+            if (statBonus >= 0) {
+                return "+" + statBonus;
+            } else {
+                return "" + statBonus;
+            }
+        } catch (Exception e) {
+            //propably wrong format...
+        }
+
+        return "";
+    }
+
 }

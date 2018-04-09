@@ -192,12 +192,12 @@ public class MainActivityFragment extends Fragment {
         setTextView(R.id.textViewHP, monster.hp);
         setTextView(R.id.textViewSpeed, monster.speed);
         //stats
-        setTextView(R.id.textViewSTR, monster.str);
-        setTextView(R.id.textViewDEX, monster.dex);
-        setTextView(R.id.textViewCON, monster.con);
-        setTextView(R.id.textViewINT, monster.inteligence);
-        setTextView(R.id.textViewWIS, monster.wis);
-        setTextView(R.id.textViewCHA, monster.cha);
+        setTextView(R.id.textViewSTR, Monster.getAbilityWithBonus(monster.str));
+        setTextView(R.id.textViewDEX, Monster.getAbilityWithBonus(monster.dex));
+        setTextView(R.id.textViewCON, Monster.getAbilityWithBonus(monster.con));
+        setTextView(R.id.textViewINT, Monster.getAbilityWithBonus(monster.inteligence));
+        setTextView(R.id.textViewWIS, Monster.getAbilityWithBonus(monster.wis));
+        setTextView(R.id.textViewCHA, Monster.getAbilityWithBonus(monster.cha));
         //immunities,languages, etc...
         mAdapterFeatures.setNewTraitList(monster.getFeatures());
 

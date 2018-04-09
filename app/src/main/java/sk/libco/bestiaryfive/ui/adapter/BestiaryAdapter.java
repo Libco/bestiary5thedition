@@ -1,6 +1,8 @@
 package sk.libco.bestiaryfive.ui.adapter;
 
 
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +26,7 @@ public class BestiaryAdapter extends RecyclerView.Adapter<BestiaryAdapter.ViewHo
 
     public BestiaryAdapter(Bestiaries bestiaries) {
         this.bestiaries = bestiaries;
+
        // mListener = listener;
     }
 
@@ -37,7 +40,7 @@ public class BestiaryAdapter extends RecyclerView.Adapter<BestiaryAdapter.ViewHo
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
 
-        final Bestiary b = bestiaries.getBestiaries().get(position);
+        final Bestiary b = bestiaries.getBestiariesWithoutAll().get(position);
 
         //holder.mItem = b;
         holder.mNameView.setText(b.name);
@@ -47,8 +50,19 @@ public class BestiaryAdapter extends RecyclerView.Adapter<BestiaryAdapter.ViewHo
         holder.mDeleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                bestiaries.deleteBestiary(b.id);
-                notifyDataSetChanged();
+
+                new AlertDialog.Builder(v.getContext())
+                        .setTitle("Delete confirmation")
+                        .setMessage("Do you really want to delete " + b.name + "?")
+                        .setIcon(R.drawable.ic_warning_black_24dp)
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                bestiaries.deleteBestiary(b.id);
+                                notifyDataSetChanged();
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, null).show();
             }
         });
 
@@ -56,7 +70,7 @@ public class BestiaryAdapter extends RecyclerView.Adapter<BestiaryAdapter.ViewHo
 
     @Override
     public int getItemCount() {
-       return bestiaries.getBestiariesCount();
+        return bestiaries.getBestiariesWithoutAllCount();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

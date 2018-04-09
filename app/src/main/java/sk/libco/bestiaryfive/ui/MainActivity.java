@@ -340,7 +340,9 @@ public class MainActivity extends AppCompatActivity implements MonsterListFragme
         Log.d(TAG,"User clicked on: " + monster.name);
        // searchView.clearFocus();
         setMonsterToView(monster);
-        searchItem.collapseActionView();
+        if (searchItem != null) {
+            searchItem.collapseActionView();
+        }
     }
 
     @Override

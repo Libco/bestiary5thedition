@@ -21,6 +21,7 @@
     <string name="reactions">Reactions</string>
     <string name="legendary_actions">Legendary Actions</string>
     <string name="description">Description</string>
+    <string name="cr_string">%s cr</string>
     <string name="info_string_menu"><a href="https://github.com/Libco/bestiary5thedition/blob/master/INSTRUCTIONS.md">Information on file importing can be found here.</a></string>
 
     <string name="srd_name"><a href="https://dnd.wizards.com/articles/features/systems-reference-document-srd">5e SRD licence</a></string>

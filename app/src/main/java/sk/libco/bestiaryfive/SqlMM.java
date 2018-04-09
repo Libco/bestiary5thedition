@@ -153,7 +153,7 @@ public class SqlMM extends SQLiteOpenHelper {
 
     /*********************************************************************/
 
-    private void insertTrait(SQLiteDatabase db, List<Monster.Trait> traits, long monsterID, int type) throws Exception {
+    private void insertTrait(SQLiteDatabase db, List<Monster.Trait> traits, long monsterID, int type) {
 
         for (Monster.Trait trait : traits) {
             ContentValues trait_values = new ContentValues();
@@ -248,11 +248,90 @@ public class SqlMM extends SQLiteOpenHelper {
 
     }
 
+    public List<Monster> getMonstersForBestiary(Integer bestiaryId) {
+
+        ArrayList<Monster> monsterList = new ArrayList<Monster>();
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String selectMonstersQuery = "SELECT " +
+                TABLE_M_ID + "," +
+                TABLE_M_NAME + "," +
+                TABLE_M_SIZE + "," +
+                TABLE_M_TYPE + "," +
+                TABLE_M_ALIGNMENT + "," +
+                TABLE_M_AC + "," +
+                TABLE_M_HP + "," +
+                TABLE_M_SPEED + "," +
+                TABLE_M_STR + "," +
+                TABLE_M_DEX + "," +
+                TABLE_M_CON + "," +
+                TABLE_M_INTELIGENCE + "," +
+                TABLE_M_WIS + "," +
+                TABLE_M_CHA + "," +
+                TABLE_M_SAVE + "," +
+                TABLE_M_SKILL + "," +
+                TABLE_M_RESIST + "," +
+                TABLE_M_VULNERABLE + "," +
+                TABLE_M_IMMUNE + "," +
+                TABLE_M_CONDITION_IMMUNE + "," +
+                TABLE_M_SENSES + "," +
+                TABLE_M_PASSIVE + "," +
+                TABLE_M_LANGUAGES + "," +
+                TABLE_M_CR + "," +
+                TABLE_M_SPELLS + "," +
+                TABLE_M_DESCRIPTION +
+                " FROM " + TABLE_M;
+
+        if (bestiaryId != null) {
+            selectMonstersQuery += " WHERE " + TABLE_M_BESTIARY_ID + " = " + bestiaryId;
+        }
+
+        Cursor cursorM = db.rawQuery(selectMonstersQuery, null);
+
+        if (cursorM.moveToFirst()) {
+            do {
+                Monster m = new Monster();
+                m.id = cursorM.getInt(0);
+                m.name = cursorM.getString(1);
+                m.size = cursorM.getString(2);
+                m.type = cursorM.getString(3);
+                m.alignment = cursorM.getString(4);
+                m.ac = cursorM.getString(5);
+                m.hp = cursorM.getString(6);
+                m.speed = cursorM.getString(7);
+                m.str = cursorM.getString(8);
+                m.dex = cursorM.getString(9);
+                m.con = cursorM.getString(10);
+                m.inteligence = cursorM.getString(11);
+                m.wis = cursorM.getString(12);
+                m.cha = cursorM.getString(13);
+                m.save = cursorM.getString(14);
+                m.skill = cursorM.getString(15);
+                m.resist = cursorM.getString(16);
+                m.vulnerable = cursorM.getString(17);
+                m.immune = cursorM.getString(18);
+                m.conditionImmune = cursorM.getString(19);
+                m.senses = cursorM.getString(20);
+                m.passive = cursorM.getString(21);
+                m.languages = cursorM.getString(22);
+                m.cr = cursorM.getString(23);
+                m.spells = cursorM.getString(24);
+                m.description = cursorM.getString(25);
+                monsterList.add(m);
+            } while (cursorM.moveToNext());
+        }
+
+        cursorM.close();
+
+        return monsterList;
+    }
+
     List<Bestiary> getAllBestiaries() {
         List<Bestiary> bestiaries = new ArrayList<>();
         // Select All Query
         String selectQuery = "SELECT " + TABLE_MM_ID + ", " + TABLE_MM_NAME + " FROM " + TABLE_MM;
-                           // " LEFT JOIN " + TABLE_M + "m ON mm." + TABLE_MM_ID + " = m." + TABLE_M_BESTIARY_ID;
+        // " LEFT JOIN " + TABLE_M + "m ON mm." + TABLE_MM_ID + " = m." + TABLE_M_BESTIARY_ID;
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursorMM = db.rawQuery(selectQuery, null);
@@ -260,76 +339,21 @@ public class SqlMM extends SQLiteOpenHelper {
         // looping through all rows and adding to list
         if (cursorMM.moveToFirst()) {
             do {
+                if (bestiaries.size() == 0) {
+                    Bestiary allBestiaries = new Bestiary();
+                    allBestiaries.id = -1;
+                    allBestiaries.name = "All";
+                    allBestiaries.monsters = getMonstersForBestiary(null);
+                    bestiaries.add(allBestiaries);
+                }
+
                 Bestiary newBestiary = new Bestiary();
                 newBestiary.id = cursorMM.getInt(0);
                 newBestiary.name = cursorMM.getString(1);
 
+                //
+                //newBestiary.monsters = getMonstersForBestiary(newBestiary.id);
 
-                String selectMonstersQuery = "SELECT " +
-                        TABLE_M_ID + "," +
-                        TABLE_M_NAME + "," +
-                        TABLE_M_SIZE + "," +
-                        TABLE_M_TYPE + "," +
-                        TABLE_M_ALIGNMENT + "," +
-                        TABLE_M_AC + "," +
-                        TABLE_M_HP + "," +
-                        TABLE_M_SPEED + "," +
-                        TABLE_M_STR + "," +
-                        TABLE_M_DEX + "," +
-                        TABLE_M_CON + "," +
-                        TABLE_M_INTELIGENCE + "," +
-                        TABLE_M_WIS + "," +
-                        TABLE_M_CHA + "," +
-                        TABLE_M_SAVE + "," +
-                        TABLE_M_SKILL + "," +
-                        TABLE_M_RESIST + "," +
-                        TABLE_M_VULNERABLE + "," +
-                        TABLE_M_IMMUNE + "," +
-                        TABLE_M_CONDITION_IMMUNE + "," +
-                        TABLE_M_SENSES + "," +
-                        TABLE_M_PASSIVE + "," +
-                        TABLE_M_LANGUAGES + "," +
-                        TABLE_M_CR + "," +
-                        TABLE_M_SPELLS + "," +
-                        TABLE_M_DESCRIPTION +
-                        " FROM " + TABLE_M + " WHERE " + TABLE_M_BESTIARY_ID + " = " + newBestiary.id;
-
-                Cursor cursorM = db.rawQuery(selectMonstersQuery, null);
-
-                if (cursorM.moveToFirst()) {
-                    do {
-                        Monster m = new Monster();
-                        m.id = cursorM.getInt(0);
-                        m.name = cursorM.getString(1);
-                        m.size = cursorM.getString(2);
-                        m.type = cursorM.getString(3);
-                        m.alignment = cursorM.getString(4);
-                        m.ac = cursorM.getString(5);
-                        m.hp = cursorM.getString(6);
-                        m.speed = cursorM.getString(7);
-                        m.str = cursorM.getString(8);
-                        m.dex = cursorM.getString(9);
-                        m.con = cursorM.getString(10);
-                        m.inteligence = cursorM.getString(11);
-                        m.wis = cursorM.getString(12);
-                        m.cha = cursorM.getString(13);
-                        m.save = cursorM.getString(14);
-                        m.skill = cursorM.getString(15);
-                        m.resist = cursorM.getString(16);
-                        m.vulnerable = cursorM.getString(17);
-                        m.immune = cursorM.getString(18);
-                        m.conditionImmune = cursorM.getString(19);
-                        m.senses = cursorM.getString(20);
-                        m.passive = cursorM.getString(21);
-                        m.languages = cursorM.getString(22);
-                        m.cr = cursorM.getString(23);
-                        m.spells = cursorM.getString(24);
-                        m.description = cursorM.getString(25);
-                        newBestiary.monsters.add(m);
-                    } while (cursorM.moveToNext());
-                }
-
-                cursorM.close();
 
                 bestiaries.add(newBestiary);
             } while (cursorMM.moveToNext());

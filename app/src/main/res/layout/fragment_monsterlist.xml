@@ -1,12 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="listener"
+            type="sk.libco.bestiaryfive.ui.adapter.MonsterListAdapter.Listener" />
+
+        <variable
+            name="model"
+            type="sk.libco.bestiaryfive.ui.models.MonsterViewModel" />
+
+    </data>
+
+    <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="60dp"
     android:orientation="horizontal"
     android:paddingStart="16dp"
     android:paddingEnd="16dp"
     android:paddingTop="10dp"
-    android:paddingBottom="10dp">
+        android:onClick="@{view -> listener.onMonsterViewModelClicked(model)}"
+        android:paddingBottom="10dp">
 
     <LinearLayout
         android:orientation="vertical"
@@ -14,14 +29,14 @@
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/id"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?attr/textAppearanceListItem"
+            android:text="@{model.m.name}"
+            android:textAppearance="?android:attr/textAppearanceListItem"
             android:textSize="13sp" />
 
         <TextView
-            android:id="@+id/content"
+            android:text="@{model.m.type}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="13sp" />
@@ -37,9 +52,10 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/textViewCR"
+            android:text="@{@string/cr_string(model.m.cr)}"
             android:textSize="13sp"/>
 
     </LinearLayout>
 
 </RelativeLayout>
+</layout>
