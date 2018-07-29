@@ -3,18 +3,24 @@ package sk.libco.bestiaryfive.ui;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.design.chip.Chip;
+import android.support.design.chip.ChipDrawable;
+import android.support.design.chip.ChipGroup;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.style.ImageSpan;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
@@ -66,14 +72,59 @@ public class MainActivity extends AppCompatActivity implements MonsterListFragme
 
         //Set toolbar
 
+//        Toolbar toolbar = findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
+//        ActionBar actionBar = getSupportActionBar();
+//        if (actionBar != null)
+//            actionBar.setDisplayShowTitleEnabled(false);
+//        else {
+//            Log.e(TAG, "Toolbar error.");
+//        }
+
+        //
+
+        //
+        ChipGroup chipGroup = findViewById(R.id.chipGroupType);
+
+        // Inflate from resources.
+        ChipDrawable chip = ChipDrawable.createFromResource(getContext(), R.xml.standalone_chip);
+        Chip aa = new Chip(this);
+        aa.setChipDrawable(chip);
+// Use it as a Drawable however you want.
+        chip.setBounds(0, 0, chip.getIntrinsicWidth(), chip.getIntrinsicHeight());
+        ImageSpan span = new ImageSpan(chip);
+
+
+        //  text.setSpan(span, 0, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        chipGroup.addView(aa);
+        //
+        //
+
+        //
+
         Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        this.setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null)
+        if (actionBar != null) {
             actionBar.setDisplayShowTitleEnabled(false);
-        else {
-            Log.e(TAG, "Toolbar error.");
         }
+
+
+        toolbar.setNavigationOnClickListener(new NavigationIconClickListener(
+                this,
+                findViewById(R.id.mm_list),
+                new AccelerateDecelerateInterpolator(),
+                this.getResources().getDrawable(R.drawable.ic_filter_list_black_24dp), // Menu open icon
+                this.getResources().getDrawable(R.drawable.ic_filter_list_black_24dp))); // Menu close icon
+
+        //
+
+        // Set cut corner background for API 23+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            findViewById(R.id.mm_list).setBackground(this.getDrawable(R.drawable.grid_background_shape));
+        }
+
 
         //Toolbar spinner
         spinner = findViewById(R.id.spinner_nav);
@@ -96,7 +147,6 @@ public class MainActivity extends AppCompatActivity implements MonsterListFragme
             }
 
         });
-
 
         //fragment
         setFragment();

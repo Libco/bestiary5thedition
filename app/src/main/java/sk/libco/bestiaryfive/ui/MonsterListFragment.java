@@ -60,6 +60,7 @@ public class MonsterListFragment extends Fragment implements MonsterListAdapter.
 
         mBinding.list.setLayoutManager(new LinearLayoutManager(getContext()));
         mBinding.list.setAdapter(mAdapter);
+        mBinding.list.setNestedScrollingEnabled(false);
 
         loadSharedProperties();
 
@@ -69,6 +70,14 @@ public class MonsterListFragment extends Fragment implements MonsterListAdapter.
             mAdapter.sortBy(null);
             setSortIcon();
         });
+
+        //
+        // Set cut corner background for API 23+
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            view.findViewById(R.id.monster_list_scroll_view).setBackground(getContext().getDrawable(R.drawable.shr_product_grid_background_shape));
+//        }
+        //
+
 
         return mBinding.getRoot();
     }
