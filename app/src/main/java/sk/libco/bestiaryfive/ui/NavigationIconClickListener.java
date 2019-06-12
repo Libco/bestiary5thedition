@@ -5,11 +5,14 @@ import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.animation.Interpolator;
 import android.widget.ImageView;
+
+import androidx.annotation.Nullable;
+
+import sk.libco.bestiaryfive.R;
 
 /**
  * {@link android.view.View.OnClickListener} used to translate the product grid sheet downward on
@@ -20,25 +23,27 @@ public class NavigationIconClickListener implements View.OnClickListener {
     private final AnimatorSet animatorSet = new AnimatorSet();
     private Context context;
     private View sheet;
+    private View backdropSheet;
     private Interpolator interpolator;
     private int height;
     private boolean backdropShown = false;
     private Drawable openIcon;
     private Drawable closeIcon;
 
-    NavigationIconClickListener(Context context, View sheet) {
-        this(context, sheet, null);
-    }
+//    NavigationIconClickListener(Context context, View sheet, Vi) {
+//        this(context, sheet, null);
+//    }
 
-    NavigationIconClickListener(Context context, View sheet, @Nullable Interpolator interpolator) {
-        this(context, sheet, interpolator, null, null);
-    }
+//    NavigationIconClickListener(Context context, View sheet, View backdropSheet, @Nullable Interpolator interpolator) {
+//        this(context, sheet, interpolator, null, null);
+//    }
 
     NavigationIconClickListener(
-            Context context, View sheet, @Nullable Interpolator interpolator,
+            Context context, View sheet, View backdropSheet, @Nullable Interpolator interpolator,
             @Nullable Drawable openIcon, @Nullable Drawable closeIcon) {
         this.context = context;
         this.sheet = sheet;
+        this.backdropSheet = backdropSheet;
         this.interpolator = interpolator;
         this.openIcon = openIcon;
         this.closeIcon = closeIcon;
@@ -59,9 +64,13 @@ public class NavigationIconClickListener implements View.OnClickListener {
 
         updateIcon(view);
 
-//        final int translateY = height -
-//                context.getResources().getDimensionPixelSize(R.dimen.shr_product_grid_reveal_height);
-        final int translateY = height - 42;
+        final int translateY = height -
+                context.getResources().getDimensionPixelSize(R.dimen.backdrop_reveal_height);
+                //- this.backdropSheet.getHeight();
+
+//        final int translateY = height - (int)sheet.getY() ;
+
+        //final int translateY = height - this.backdropSheet.getHeight();
 
         ObjectAnimator animator = ObjectAnimator.ofFloat(sheet, "translationY", backdropShown ? translateY : 0);
         animator.setDuration(500);

@@ -3,15 +3,17 @@ package sk.libco.bestiaryfive.ui.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import sk.libco.bestiaryfive.databinding.FragmentMonsterlistBinding;
@@ -26,6 +28,11 @@ public class MonsterListAdapter extends RecyclerView.Adapter<MonsterViewHolder> 
     protected Context context;
     private List<MonsterViewModel> originalList;
     private SortedBy sortedBy = SortedBy.NAME;
+
+    //
+    String filterByName = null;
+    List<String> filterByType = new LinkedList<>();
+    List<String> filterBySize = new LinkedList<>();
 
     public MonsterListAdapter(Context context,
                               LayoutInflater inflater,
@@ -104,6 +111,43 @@ public class MonsterListAdapter extends RecyclerView.Adapter<MonsterViewHolder> 
         notifyDataSetChanged();
     }
 
+    //
+    public boolean changeFilterByType(String f, boolean add) {
+        boolean change = false;
+        if(add) {
+            if(!filterByType.contains(f)) {
+                change = filterByType.add(f);
+            }
+        } else {
+            change = filterByType.remove(f);
+        }
+
+        if(change) {
+            list = getFilteredResults();
+            MonsterListAdapter.this.notifyDataSetChanged();
+        }
+
+        return change;
+    }
+    public boolean changeFilterBySize(String f, boolean add) {
+        boolean change = false;
+        if(add) {
+            if(!filterBySize.contains(f)) {
+                change = filterBySize.add(f);
+            }
+        } else {
+            change = filterBySize.remove(f);
+        }
+
+        if(change) {
+            list = getFilteredResults();
+            MonsterListAdapter.this.notifyDataSetChanged();
+        }
+
+        return change;
+    }
+    //
+
     @Override
     public Filter getFilter() {
         return new Filter() {
@@ -118,11 +162,13 @@ public class MonsterListAdapter extends RecyclerView.Adapter<MonsterViewHolder> 
             protected FilterResults performFiltering(CharSequence constraint) {
                 List<MonsterViewModel> filteredResults = null;
                 if (constraint.length() == 0) {
-                    filteredResults = originalList;
+                    filterByName= null;
+                    //filteredResults = originalList;
                 } else {
-                    filteredResults = getFilteredResults(constraint.toString().toLowerCase());
+                    filterByName = constraint.toString();
                 }
 
+                filteredResults = getFilteredResults();
                 FilterResults results = new FilterResults();
                 results.values = filteredResults;
 
@@ -131,14 +177,44 @@ public class MonsterListAdapter extends RecyclerView.Adapter<MonsterViewHolder> 
         };
     }
 
-    private List<MonsterViewModel> getFilteredResults(String constraint) {
+    private List<MonsterViewModel> getFilteredResults() {
         List<MonsterViewModel> results = new ArrayList<>();
 
-        for (MonsterViewModel item : originalList) {
-            if (item.m.name.toLowerCase().contains(constraint)) {
-                results.add(item);
+        if(filterByType.size() > 0) {
+            for (MonsterViewModel item : originalList) {
+                for(String f : filterByType) {
+                    if (item.m.getTypeSimple().contains(f)) {
+                        results.add(item);
+                    }
+                }
             }
         }
+
+        if(filterBySize.size() > 0) {
+            for (MonsterViewModel item : originalList) {
+                for(String f : filterBySize) {
+                    if (item.m.getSizeString().contains(f)) {
+                        results.add(item);
+                    }
+                }
+            }
+        }
+
+        if(results.size() == 0) {
+            results = originalList;
+        }
+
+        if(filterByName != null && filterByName.length() > 0) {
+            List<MonsterViewModel> filteredList = new LinkedList<>();
+            for (MonsterViewModel item : results) {
+                if (item.m.name.toLowerCase().contains(filterByName)) {
+                    filteredList.add(item);
+                }
+            }
+            results = filteredList;
+        }
+
+
         return results;
     }
 

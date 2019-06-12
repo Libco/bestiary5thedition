@@ -5,16 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.chip.Chip;
-import android.support.design.chip.ChipDrawable;
-import android.support.design.chip.ChipGroup;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
-import android.support.v7.widget.Toolbar;
-import android.text.style.ImageSpan;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,7 +13,19 @@ import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.Spinner;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipDrawable;
+import com.google.android.material.chip.ChipGroup;
 
 import java.util.List;
 
@@ -83,23 +85,53 @@ public class MainActivity extends AppCompatActivity implements MonsterListFragme
 
         //
 
-        //
-        ChipGroup chipGroup = findViewById(R.id.chipGroupType);
+        // FILTERS
 
-        // Inflate from resources.
-        ChipDrawable chip = ChipDrawable.createFromResource(getContext(), R.xml.standalone_chip);
-        Chip aa = new Chip(this);
-        aa.setChipDrawable(chip);
-// Use it as a Drawable however you want.
-        chip.setBounds(0, 0, chip.getIntrinsicWidth(), chip.getIntrinsicHeight());
-        ImageSpan span = new ImageSpan(chip);
+        ChipGroup chipGroupType = findViewById(R.id.chipGroupType);
+        for (String type:bestiaries.selectedBestiary.monsters.getTypeFilter()) {
+            ChipDrawable chipDrawable = ChipDrawable.createFromResource(this, R.xml.filter_chip);
+            chipDrawable.setBounds(0, 0, chipDrawable.getIntrinsicWidth(), chipDrawable.getIntrinsicHeight());
+            chipDrawable.setText(type);
+            Chip chip = new Chip(this);
+            chip.setChipDrawable(chipDrawable);
+            chip.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
+                }
+            });
+            chip.setOnCheckedChangeListener((compoundButton, b) -> {
+                if(monsterListFragment != null) {
+                    monsterListFragment.changeFilterType(compoundButton.getText().toString(), b);
+                }
+            });
+            
+            chipGroupType.addView(chip);
+        }
 
-        //  text.setSpan(span, 0, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ChipGroup chipGroupSize = findViewById(R.id.chipGroupSize);
+        for (String type:bestiaries.selectedBestiary.monsters.getSizeFilter()) {
+            ChipDrawable chipDrawable = ChipDrawable.createFromResource(this, R.xml.filter_chip);
+            chipDrawable.setBounds(0, 0, chipDrawable.getIntrinsicWidth(), chipDrawable.getIntrinsicHeight());
+            chipDrawable.setText(type);
+            Chip chip = new Chip(this);
+            chip.setChipDrawable(chipDrawable);
+            //must be implemented to be checkable for some reason.....................
+            chip.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Log.d(TAG, "onClick");
+                }
+            });
+            chip.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                    Log.d(TAG, "onCheckedChanged: " + ((Chip)compoundButton).getText() + ": " + b);
 
-        chipGroup.addView(aa);
-        //
-        //
+                }
+            });
+            chipGroupSize.addView(chip);
+        }
 
         //
 
@@ -114,6 +146,7 @@ public class MainActivity extends AppCompatActivity implements MonsterListFragme
         toolbar.setNavigationOnClickListener(new NavigationIconClickListener(
                 this,
                 findViewById(R.id.mm_list),
+                findViewById(R.id.my_backdrop),
                 new AccelerateDecelerateInterpolator(),
                 this.getResources().getDrawable(R.drawable.ic_filter_list_black_24dp), // Menu open icon
                 this.getResources().getDrawable(R.drawable.ic_filter_list_black_24dp))); // Menu close icon
@@ -235,7 +268,7 @@ public class MainActivity extends AppCompatActivity implements MonsterListFragme
                     if(query.isEmpty() || bestiaries.selectedBestiary == null)
                         return true;
 
-                    for (Monster m:bestiaries.selectedBestiary.monsters) {
+                    for (Monster m:bestiaries.selectedBestiary.monsters.getMonsters()) {
                         if(m.name.toLowerCase().startsWith(query.toLowerCase())) {
                             setMonsterToView(m);
                             //TODO:
@@ -344,7 +377,7 @@ public class MainActivity extends AppCompatActivity implements MonsterListFragme
         //selectedMonster = -1;
         setFragment();
         if(monsterListFragment != null)
-            monsterListFragment.setMonsterList(bestiaries.selectedBestiary.monsters);
+            monsterListFragment.setMonsterList(bestiaries.selectedBestiary.monsters.getMonsters());
         //setMonsterToView(bestiaries.selectedBestiary.monsters.get(0));
     }
 
@@ -400,7 +433,7 @@ public class MainActivity extends AppCompatActivity implements MonsterListFragme
 
         if (bestiaries != null && bestiaries.selectedBestiary != null) {
             selectedMonster = -1;
-            return bestiaries.selectedBestiary.monsters;
+            return bestiaries.selectedBestiary.monsters.getMonsters();
         }
         return null;
     }

@@ -28,8 +28,9 @@ public class BestiaryParserJson {
                     Monster m = new Monster();
                     m.name = jsonobject.getString("name");
                     m.size = jsonobject.getString("size");
-                    m.type = jsonobject.getString("type") + " " + jsonobject.getString("subtype");
                     m.alignment = jsonobject.getString("alignment");
+                    //must be after size and alignment
+                    m.setType(jsonobject.getString("type") + " " + jsonobject.getString("subtype"));
                     m.ac = jsonobject.getString("armor_class");
                     m.hp = jsonobject.getString("hit_points");
                     m.speed = jsonobject.getString("speed");
@@ -124,7 +125,7 @@ public class BestiaryParserJson {
 
                     }
 
-                    bestiary.monsters.add(m);
+                    bestiary.monsters.AddMonster(m);
 
                 } catch (org.json.JSONException e) {
                     Log.d("JsonParser", "Error parsing file: " + e.toString());

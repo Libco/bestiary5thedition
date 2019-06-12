@@ -8,7 +8,9 @@ public class Monster {
     public Integer id;
     public String name;
     public String size;
-    public String type;
+    private String type;
+    private String typeSimple;
+    private String typeString;
     public String alignment;
     public String ac;
     public String hp;
@@ -69,43 +71,69 @@ public class Monster {
         return newTrait;
     }
 
-    public String getTypeString() {
-        String typeString = "";
+    public String getSizeString() {
+        String sizeString = "Unknown size";
         if(size != null && !size.isEmpty()) {
-
             switch (size.toLowerCase()) {
                 case "t":
-                    typeString = "Tiny";
+                    sizeString = "Tiny";
                     break;
                 case "s":
-                    typeString = "Small";
+                    sizeString = "Small";
                     break;
                 case "m":
-                    typeString = "Medium";
+                    sizeString = "Medium";
                     break;
                 case "l":
-                    typeString = "Large";
+                    sizeString = "Large";
                     break;
                 case "h":
-                    typeString = "Huge";
+                    sizeString = "Huge";
                     break;
                 case "g":
-                    typeString = "Gargantuan";
+                    sizeString = "Gargantuan";
                     break;
                 default:
-                    typeString = size;
+                    sizeString = size;
             }
-            typeString += " ";
         }
-        typeString += type;
+        return sizeString;
+    }
 
-        if(alignment != null && !alignment.isEmpty())
-            typeString += ", " + alignment;
+    public String getType() {
+        return type;
+    }
 
+    public String getTypeString() {
         return typeString;
     }
 
+    public String getTypeSimple() {
+      return typeSimple;
+    }
+
+    public void setType(String t) {
+        if(t == null) {
+            t = "unknown";
+        }
+
+        type = t;
+
+        typeString = getSizeString() + " " + t;
+        if(alignment != null && !alignment.isEmpty()) {
+            typeString += ", " + alignment;
+        }
+
+        typeSimple = t;
+        typeSimple = typeSimple.split(" ")[0];
+        typeSimple = typeSimple.toLowerCase();
+        typeSimple = Character.toString(typeSimple.charAt(0)).toUpperCase()+typeSimple.substring(1);
+        typeSimple = typeSimple.replaceAll("[^A-Za-z0-9]", "");
+    }
+
     public final static List<String> CR_ORDER = Arrays.asList("0", "1/8", "1/4", "1/2", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30");
+    public final static List<String> SIZE_ORDER = Arrays.asList("Tiny", "Small", "Medium", "Large", "Huge", "Gargantuan");
+
 
     public static String getAbilityWithBonus(String ability) {
         return String.format("%s (%s)", ability, getBonus(ability));
@@ -147,9 +175,7 @@ public class Monster {
         try {
             int statInt = Integer.parseInt(stat);
             int statBonus = (statInt - 10) / 2;
-            if (statBonus > 5) {
-                statBonus = 5;
-            } else if (statBonus < -5) {
+            if (statBonus < -5) {
                 statBonus = -5;
             }
             //

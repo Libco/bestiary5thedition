@@ -5,8 +5,9 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.OpenableColumns;
-import android.support.design.widget.Snackbar;
 import android.util.Log;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -50,7 +51,7 @@ public class Bestiaries implements SRD.SRDEvents {
 
             sql.addBestiary(newBestiary);
 
-            showSnackbar("Imported " + newBestiary.monsters.size() + " monsters");
+            showSnackbar("Imported " + newBestiary.monsters.getMonsters().size() + " monsters");
 
         } catch (Exception e) {
             //log the exception
@@ -110,7 +111,7 @@ public class Bestiaries implements SRD.SRDEvents {
     public int setSelectedBestiary(int position) {
         if(bestiaries.size() > position && position >= 0) {
             selectedBestiary = bestiaries.get(position);
-            if (selectedBestiary.id >= 0 && selectedBestiary.monsters.size() == 0) {
+            if (selectedBestiary.id >= 0 && selectedBestiary.monsters.getMonsters().size() == 0) {
                 selectedBestiary.monsters = sql.getMonstersForBestiary(selectedBestiary.id);
             }
             Log.d(TAG,"bestiary set to: " + selectedBestiary.name);
@@ -136,7 +137,7 @@ public class Bestiaries implements SRD.SRDEvents {
 */
     public Monster getMonsterFromId(int id) {
         for(Bestiary b: bestiaries) {
-            for (Monster m : b.monsters) {
+            for (Monster m : b.monsters.getMonsters()) {
                 if (m.id == id) {
                     return m;
                 }
@@ -215,8 +216,8 @@ public class Bestiaries implements SRD.SRDEvents {
         for (Bestiary b:bestiaries) {
             if(b.id == 0) {
 
-                if(b.monsters.size() > 0) {
-                    showSnackbar("Downloaded " + b.monsters.size() + " 5e SRD monsters");
+                if(b.monsters.getMonsters().size() > 0) {
+                    showSnackbar("Downloaded " + b.monsters.getMonsters().size() + " 5e SRD monsters");
                     sql.addBestiary(b);
                 } else {
                     showSnackbar("Error occurred while downloading 5e SRD");

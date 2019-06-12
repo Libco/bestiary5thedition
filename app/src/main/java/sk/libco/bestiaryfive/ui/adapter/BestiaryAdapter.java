@@ -2,13 +2,14 @@ package sk.libco.bestiaryfive.ui.adapter;
 
 
 import android.content.DialogInterface;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.recyclerview.widget.RecyclerView;
 
 import sk.libco.bestiaryfive.Bestiaries;
 import sk.libco.bestiaryfive.Bestiary;

@@ -3,15 +3,16 @@ package sk.libco.bestiaryfive.ui;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -122,6 +123,19 @@ public class MonsterListFragment extends Fragment implements MonsterListAdapter.
             mBinding.list.setAdapter(mAdapter);
             loadSharedProperties();
         }
+    }
+
+    public boolean changeFilterType(String f, boolean add) {
+
+        if (mAdapter != null) {
+            return mAdapter.changeFilterByType(f, add);
+        }
+
+        return false;
+    }
+
+    public List<String> getCurrentFilterType() {
+        return null;
     }
 
     private void loadSharedProperties() {
