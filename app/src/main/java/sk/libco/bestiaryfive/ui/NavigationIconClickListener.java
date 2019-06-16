@@ -79,6 +79,8 @@ public class NavigationIconClickListener implements View.OnClickListener {
         }
         animatorSet.play(animator);
         animator.start();
+
+        //TODO: show how many results we have from filtering
     }
 
     private void updateIcon(View view) {
@@ -92,5 +94,9 @@ public class NavigationIconClickListener implements View.OnClickListener {
                 ((ImageView) view).setImageDrawable(openIcon);
             }
         }
+    }
+
+    public boolean isBackdropShown() {
+        return backdropShown;
     }
 }

@@ -134,6 +134,15 @@ public class MonsterListFragment extends Fragment implements MonsterListAdapter.
         return false;
     }
 
+    public boolean changeFilterSize(String f, boolean add) {
+
+        if (mAdapter != null) {
+            return mAdapter.changeFilterBySize(f, add);
+        }
+
+        return false;
+    }
+
     public List<String> getCurrentFilterType() {
         return null;
     }

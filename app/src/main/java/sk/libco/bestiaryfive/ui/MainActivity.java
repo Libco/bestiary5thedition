@@ -27,7 +27,10 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipDrawable;
 import com.google.android.material.chip.ChipGroup;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import sk.libco.bestiaryfive.Bestiaries;
 import sk.libco.bestiaryfive.Monster;
@@ -51,6 +54,9 @@ public class MainActivity extends AppCompatActivity implements MonsterListFragme
     private Bestiaries bestiaries;
     private int selectedMonster = -1;
     private int selectedBestiary = 0;
+
+
+    private Map<String, ArrayList<Chip>> filterCheckbox = new HashMap<String, ArrayList<Chip>>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements MonsterListFragme
         // FILTERS
 
         ChipGroup chipGroupType = findViewById(R.id.chipGroupType);
+        ArrayList<Chip> filterDictionary = new ArrayList<Chip>();
         for (String type:bestiaries.selectedBestiary.monsters.getTypeFilter()) {
             ChipDrawable chipDrawable = ChipDrawable.createFromResource(this, R.xml.filter_chip);
             chipDrawable.setBounds(0, 0, chipDrawable.getIntrinsicWidth(), chipDrawable.getIntrinsicHeight());
@@ -101,15 +108,17 @@ public class MainActivity extends AppCompatActivity implements MonsterListFragme
                 }
             });
             chip.setOnCheckedChangeListener((compoundButton, b) -> {
-                if(monsterListFragment != null) {
-                    monsterListFragment.changeFilterType(compoundButton.getText().toString(), b);
-                }
+                setFilterState();
             });
             
             chipGroupType.addView(chip);
+            filterDictionary.add(chip);
         }
+        filterCheckbox.put("type", filterDictionary);
+
 
         ChipGroup chipGroupSize = findViewById(R.id.chipGroupSize);
+        filterDictionary = new ArrayList<Chip>();
         for (String type:bestiaries.selectedBestiary.monsters.getSizeFilter()) {
             ChipDrawable chipDrawable = ChipDrawable.createFromResource(this, R.xml.filter_chip);
             chipDrawable.setBounds(0, 0, chipDrawable.getIntrinsicWidth(), chipDrawable.getIntrinsicHeight());
@@ -126,12 +135,13 @@ public class MainActivity extends AppCompatActivity implements MonsterListFragme
             chip.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                    Log.d(TAG, "onCheckedChanged: " + ((Chip)compoundButton).getText() + ": " + b);
-
+                    setFilterState();
                 }
             });
             chipGroupSize.addView(chip);
+            filterDictionary.add(chip);
         }
+        filterCheckbox.put("size", filterDictionary);
 
         //
 
@@ -141,7 +151,6 @@ public class MainActivity extends AppCompatActivity implements MonsterListFragme
         if (actionBar != null) {
             actionBar.setDisplayShowTitleEnabled(false);
         }
-
 
         toolbar.setNavigationOnClickListener(new NavigationIconClickListener(
                 this,
@@ -184,6 +193,30 @@ public class MainActivity extends AppCompatActivity implements MonsterListFragme
         //fragment
         setFragment();
 
+    }
+
+    private void setFilterState() {
+
+        for (Chip chip:filterCheckbox.get("type"))
+        {
+            if(monsterListFragment != null) {
+                monsterListFragment.changeFilterType(chip.getText().toString(), chip.isChecked());
+            }
+        }
+
+        for (Chip chip:filterCheckbox.get("size"))
+        {
+            if(monsterListFragment != null) {
+                monsterListFragment.changeFilterSize(chip.getText().toString(), chip.isChecked());
+            }
+        }
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        setFilterState();
     }
 
     @Override
@@ -337,6 +370,7 @@ public class MainActivity extends AppCompatActivity implements MonsterListFragme
             if (!(currentFragment instanceof MonsterListFragment)) {
                 replaceFragment(monsterListFragment, true);
             }
+            setFilterState();
 
         } else {
             if (!(currentFragment instanceof MainActivityInfoFragment)) {
@@ -379,6 +413,8 @@ public class MainActivity extends AppCompatActivity implements MonsterListFragme
         if(monsterListFragment != null)
             monsterListFragment.setMonsterList(bestiaries.selectedBestiary.monsters.getMonsters());
         //setMonsterToView(bestiaries.selectedBestiary.monsters.get(0));
+
+        setFilterState();
     }
 
     private void setMonsterToView(Monster monster) {

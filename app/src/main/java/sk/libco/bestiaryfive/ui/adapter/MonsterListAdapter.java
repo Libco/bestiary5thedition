@@ -177,32 +177,52 @@ public class MonsterListAdapter extends RecyclerView.Adapter<MonsterViewHolder> 
         };
     }
 
-    private List<MonsterViewModel> getFilteredResults() {
-        List<MonsterViewModel> results = new ArrayList<>();
+    private List<MonsterViewModel> filterByType(List<MonsterViewModel> listToBeFiltering) {
+
+        List<MonsterViewModel> results = null;
 
         if(filterByType.size() > 0) {
-            for (MonsterViewModel item : originalList) {
+            results = new ArrayList<>();
+            for (MonsterViewModel item : listToBeFiltering) {
                 for(String f : filterByType) {
                     if (item.m.getTypeSimple().contains(f)) {
                         results.add(item);
                     }
                 }
             }
+        } else {
+            results = listToBeFiltering;
         }
 
+        return results;
+    }
+
+    private List<MonsterViewModel> filterBySize(List<MonsterViewModel> listToBeFiltering) {
+
+        List<MonsterViewModel> results = null;
+
         if(filterBySize.size() > 0) {
-            for (MonsterViewModel item : originalList) {
+            results = new ArrayList<>();
+            for (MonsterViewModel item : listToBeFiltering) {
                 for(String f : filterBySize) {
                     if (item.m.getSizeString().contains(f)) {
                         results.add(item);
                     }
                 }
             }
+        } else {
+            results = listToBeFiltering;
         }
 
-        if(results.size() == 0) {
-            results = originalList;
-        }
+        return results;
+    }
+
+    private List<MonsterViewModel> getFilteredResults() {
+
+        List<MonsterViewModel> results = originalList;
+
+        results = filterByType(results);
+        results = filterBySize(results);
 
         if(filterByName != null && filterByName.length() > 0) {
             List<MonsterViewModel> filteredList = new LinkedList<>();
@@ -213,7 +233,6 @@ public class MonsterListAdapter extends RecyclerView.Adapter<MonsterViewHolder> 
             }
             results = filteredList;
         }
-
 
         return results;
     }
