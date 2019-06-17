@@ -16,7 +16,7 @@ public class SqlMM extends SQLiteOpenHelper {
 
     private static final String TAG = "SQLMM";
     // If you change the database schema, you must increment the database version.
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     private static final String DATABASE_NAME = "mm.db";
     private static final String TABLE_MM = "bestiary";
     private static final String TABLE_MM_ID = "id";
@@ -145,7 +145,15 @@ public class SqlMM extends SQLiteOpenHelper {
     }
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         //Nothing for now
-        onCreate(db);
+
+        if(oldVersion < 1 && newVersion == 1) {
+            onCreate(db);
+        }
+
+        if(oldVersion == 1 && newVersion == 2) {
+            db.execSQL("DELETE FROM " + TABLE_M + " WHERE " + TABLE_M_BESTIARY_ID + " NOT IN (SELECT " + TABLE_MM_ID + " FROM " + TABLE_MM + ")");
+        }
+
     }
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         onUpgrade(db, oldVersion, newVersion);
@@ -242,10 +250,10 @@ public class SqlMM extends SQLiteOpenHelper {
     }
 
     void deleteBestiary(int idToDelete) {
-
         SQLiteDatabase db = getWritableDatabase();
         db.delete(TABLE_MM, TABLE_MM_ID+"=?", new String[] { String.valueOf(idToDelete) });
-
+        db.delete(TABLE_M, TABLE_M_BESTIARY_ID+"=?", new String[] { String.valueOf(idToDelete) });
+        db.close();
     }
 
     public MonsterList getMonstersForBestiary(Integer bestiaryId) {
