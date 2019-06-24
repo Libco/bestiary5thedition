@@ -18,7 +18,7 @@ public class BestiaryParser {
 
     private static final String ns = null;
 
-    public List<Monster> parse(InputStream in) throws XmlPullParserException, IOException {
+    public MonsterList parse(InputStream in) throws XmlPullParserException, IOException {
         try {
             XmlPullParser parser = Xml.newPullParser();
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
@@ -30,8 +30,8 @@ public class BestiaryParser {
         }
     }
 
-    private List<Monster> readFeed(XmlPullParser parser) throws XmlPullParserException, IOException {
-        List<Monster> entries = new ArrayList<>();
+    private MonsterList readFeed(XmlPullParser parser) throws XmlPullParserException, IOException {
+        MonsterList entries = new MonsterList();
 
         parser.require(XmlPullParser.START_TAG, ns, "compendium");
         while (parser.next() != XmlPullParser.END_TAG) {
@@ -43,7 +43,7 @@ public class BestiaryParser {
             // Starts by looking for the entry tag
             if (name.equals("monster")) {
                 //Log.d(TAG, "parsing: " + name);
-                entries.add(readEntry(parser));
+                entries.AddMonster(readEntry(parser));
             } else {
                 //Log.d(TAG, "skipping");
                 skip(parser);

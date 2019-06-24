@@ -1,41 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
     </data>
 
-    <LinearLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+      >
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
+        <LinearLayout
+            style="@style/Widget.Backdrop"
             android:layout_width="match_parent"
-            android:layout_height="?android:attr/actionBarSize"
-            android:background="@color/colorPrimary"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+            android:layout_height="match_parent"
+            android:layout_marginBottom="32dp"
+            android:gravity="start"
+            android:orientation="vertical"
+            android:paddingLeft="16dp"
+            android:paddingTop="54dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="16dp">
 
-            <Spinner
-                android:id="@+id/spinner_nav"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+            <include layout="@layout/content_backdrop_filter" />
 
-        </android.support.v7.widget.Toolbar>
+        </LinearLayout>
 
-
-        <FrameLayout
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/my_backdrop"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            app:elevation="0dp">
+
+            <!--<androidx.appcompat.widget.Toolbar-->
+            <!--android:id="@+id/toolbar"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="?android:attr/actionBarSize"-->
+            <!--android:background="@color/colorPrimary"-->
+            <!--android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">-->
+
+            <!--<Spinner-->
+            <!--android:id="@+id/spinner_nav"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content" />-->
+
+            <!--</androidx.appcompat.widget.Toolbar>-->
+
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?android:attr/actionBarSize"
+                android:background="@color/colorPrimary"
+                app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+                android:paddingEnd="12dp"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:paddingStart="12dp"
+                app:contentInsetStart="0dp"
+                app:navigationIcon="@drawable/ic_filter_list_black_24dp"
+                app:title="">
+
+            </androidx.appcompat.widget.Toolbar>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+
+        <LinearLayout
+            android:id="@+id/mm_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="54dp"
+            android:background="@color/white"
+            android:elevation="8dp">
 
             <include
                 layout="@layout/content_main"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
-        </FrameLayout>
+        </LinearLayout>
 
-    </LinearLayout>
 
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

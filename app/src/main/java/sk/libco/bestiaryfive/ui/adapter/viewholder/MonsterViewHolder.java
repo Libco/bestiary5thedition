@@ -1,7 +1,8 @@
 package sk.libco.bestiaryfive.ui.adapter.viewholder;
 
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import sk.libco.bestiaryfive.databinding.FragmentMonsterlistBinding;
 import sk.libco.bestiaryfive.ui.adapter.MonsterListAdapter;

@@ -3,15 +3,17 @@ package sk.libco.bestiaryfive.ui.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import sk.libco.bestiaryfive.databinding.FragmentMonsterlistBinding;
@@ -26,6 +28,11 @@ public class MonsterListAdapter extends RecyclerView.Adapter<MonsterViewHolder> 
     protected Context context;
     private List<MonsterViewModel> originalList;
     private SortedBy sortedBy = SortedBy.NAME;
+
+    //
+    String filterByName = null;
+    List<String> filterByType = new LinkedList<>();
+    List<String> filterBySize = new LinkedList<>();
 
     public MonsterListAdapter(Context context,
                               LayoutInflater inflater,
@@ -104,6 +111,43 @@ public class MonsterListAdapter extends RecyclerView.Adapter<MonsterViewHolder> 
         notifyDataSetChanged();
     }
 
+    //
+    public boolean changeFilterByType(String f, boolean add) {
+        boolean change = false;
+        if(add) {
+            if(!filterByType.contains(f)) {
+                change = filterByType.add(f);
+            }
+        } else {
+            change = filterByType.remove(f);
+        }
+
+        if(change) {
+            list = getFilteredResults();
+            MonsterListAdapter.this.notifyDataSetChanged();
+        }
+
+        return change;
+    }
+    public boolean changeFilterBySize(String f, boolean add) {
+        boolean change = false;
+        if(add) {
+            if(!filterBySize.contains(f)) {
+                change = filterBySize.add(f);
+            }
+        } else {
+            change = filterBySize.remove(f);
+        }
+
+        if(change) {
+            list = getFilteredResults();
+            MonsterListAdapter.this.notifyDataSetChanged();
+        }
+
+        return change;
+    }
+    //
+
     @Override
     public Filter getFilter() {
         return new Filter() {
@@ -112,17 +156,20 @@ public class MonsterListAdapter extends RecyclerView.Adapter<MonsterViewHolder> 
             protected void publishResults(CharSequence constraint, FilterResults results) {
                 list = (List<MonsterViewModel>) results.values;
                 MonsterListAdapter.this.notifyDataSetChanged();
+                mListener.onFilterPublishResult();
             }
 
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
                 List<MonsterViewModel> filteredResults = null;
                 if (constraint.length() == 0) {
-                    filteredResults = originalList;
+                    filterByName= null;
+                    //filteredResults = originalList;
                 } else {
-                    filteredResults = getFilteredResults(constraint.toString().toLowerCase());
+                    filterByName = constraint.toString();
                 }
 
+                filteredResults = getFilteredResults();
                 FilterResults results = new FilterResults();
                 results.values = filteredResults;
 
@@ -131,14 +178,63 @@ public class MonsterListAdapter extends RecyclerView.Adapter<MonsterViewHolder> 
         };
     }
 
-    private List<MonsterViewModel> getFilteredResults(String constraint) {
-        List<MonsterViewModel> results = new ArrayList<>();
+    private List<MonsterViewModel> filterByType(List<MonsterViewModel> listToBeFiltering) {
 
-        for (MonsterViewModel item : originalList) {
-            if (item.m.name.toLowerCase().contains(constraint)) {
-                results.add(item);
+        List<MonsterViewModel> results = null;
+
+        if(filterByType.size() > 0) {
+            results = new ArrayList<>();
+            for (MonsterViewModel item : listToBeFiltering) {
+                for(String f : filterByType) {
+                    if (item.m.getTypeSimple().contains(f)) {
+                        results.add(item);
+                    }
+                }
             }
+        } else {
+            results = listToBeFiltering;
         }
+
+        return results;
+    }
+
+    private List<MonsterViewModel> filterBySize(List<MonsterViewModel> listToBeFiltering) {
+
+        List<MonsterViewModel> results = null;
+
+        if(filterBySize.size() > 0) {
+            results = new ArrayList<>();
+            for (MonsterViewModel item : listToBeFiltering) {
+                for(String f : filterBySize) {
+                    if (item.m.getSizeString().contains(f)) {
+                        results.add(item);
+                    }
+                }
+            }
+        } else {
+            results = listToBeFiltering;
+        }
+
+        return results;
+    }
+
+    private List<MonsterViewModel> getFilteredResults() {
+
+        List<MonsterViewModel> results = originalList;
+
+        results = filterByType(results);
+        results = filterBySize(results);
+
+        if(filterByName != null && filterByName.length() > 0) {
+            List<MonsterViewModel> filteredList = new LinkedList<>();
+            for (MonsterViewModel item : results) {
+                if (item.m.name.toLowerCase().contains(filterByName)) {
+                    filteredList.add(item);
+                }
+            }
+            results = filteredList;
+        }
+
         return results;
     }
 
@@ -149,6 +245,7 @@ public class MonsterListAdapter extends RecyclerView.Adapter<MonsterViewHolder> 
 
     public interface Listener {
         void onMonsterViewModelClicked(MonsterViewModel model);
+        void onFilterPublishResult();
     }
 
 }

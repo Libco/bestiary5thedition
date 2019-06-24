@@ -28,8 +28,14 @@ public class BestiaryParserJson {
                     Monster m = new Monster();
                     m.name = jsonobject.getString("name");
                     m.size = jsonobject.getString("size");
-                    m.type = jsonobject.getString("type") + " " + jsonobject.getString("subtype");
                     m.alignment = jsonobject.getString("alignment");
+                    //must be after size and alignment
+                    String subtype = jsonobject.getString("subtype");
+                    if(subtype == null || subtype.equals("null")) {
+                        subtype = "";
+                    }
+
+                    m.setType(jsonobject.getString("type") + " " + subtype);
                     m.ac = jsonobject.getString("armor_class");
                     m.hp = jsonobject.getString("hit_points");
                     m.speed = jsonobject.getString("speed");
@@ -50,10 +56,10 @@ public class BestiaryParserJson {
                         m.skill = parseSaveSkill(jsonobject,m.skill,skill);
                     }
 
-                    m.vulnerable = jsonobject.getString("damage_vulnerabilities");
-                    m.resist = jsonobject.getString("damage_resistances");
-                    m.immune = jsonobject.getString("damage_immunities");
-                    m.conditionImmune = jsonobject.getString("condition_immunities");
+                    m.vulnerable = jsonobject.getJSONArray("damage_vulnerabilities").join(", ").replace("\"", "");
+                    m.resist = jsonobject.getJSONArray("damage_resistances").join(", ").replace("\"", "");
+                    m.immune = jsonobject.getJSONArray("damage_immunities").join(", ").replace("\"", "");
+                    m.conditionImmune = jsonobject.getJSONArray("condition_immunities").join(", ").replace("\"", "");
                     m.senses = jsonobject.getString("senses");
                     m.languages = jsonobject.getString("languages");
                     m.cr = jsonobject.getString("challenge_rating");
@@ -124,7 +130,7 @@ public class BestiaryParserJson {
 
                     }
 
-                    bestiary.monsters.add(m);
+                    bestiary.monsters.AddMonster(m);
 
                 } catch (org.json.JSONException e) {
                     Log.d("JsonParser", "Error parsing file: " + e.toString());

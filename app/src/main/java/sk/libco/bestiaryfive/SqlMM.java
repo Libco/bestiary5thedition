@@ -16,7 +16,7 @@ public class SqlMM extends SQLiteOpenHelper {
 
     private static final String TAG = "SQLMM";
     // If you change the database schema, you must increment the database version.
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     private static final String DATABASE_NAME = "mm.db";
     private static final String TABLE_MM = "bestiary";
     private static final String TABLE_MM_ID = "id";
@@ -145,7 +145,16 @@ public class SqlMM extends SQLiteOpenHelper {
     }
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         //Nothing for now
-        onCreate(db);
+
+        if(oldVersion < 1 && newVersion == 1) {
+            onCreate(db);
+        }
+
+        if(oldVersion == 1 && newVersion == 2) {
+            db.execSQL("DELETE FROM " + TABLE_MM + " WHERE " + TABLE_MM_NAME + " = '5e SRD'");
+            db.execSQL("DELETE FROM " + TABLE_M + " WHERE " + TABLE_M_BESTIARY_ID + " NOT IN (SELECT " + TABLE_MM_ID + " FROM " + TABLE_MM + ")");
+        }
+
     }
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         onUpgrade(db, oldVersion, newVersion);
@@ -189,14 +198,14 @@ public class SqlMM extends SQLiteOpenHelper {
             // Notice how we haven't specified the primary key. SQLite auto increments the primary key column.
             long id = db.insertOrThrow(TABLE_MM, null, values);
 
-            for (Monster m:bestiary.monsters) {
+            for (Monster m:bestiary.monsters.getMonsters()) {
 
                 ContentValues monster_values = new ContentValues();
 
                 monster_values.put(TABLE_M_BESTIARY_ID, id);
                 monster_values.put(TABLE_M_NAME, m.name);
                 monster_values.put(TABLE_M_SIZE, m.size);
-                monster_values.put(TABLE_M_TYPE, m.type);
+                monster_values.put(TABLE_M_TYPE, m.getType());
                 monster_values.put(TABLE_M_ALIGNMENT, m.alignment);
                 monster_values.put(TABLE_M_AC, m.ac);
                 monster_values.put(TABLE_M_HP, m.hp);
@@ -242,15 +251,15 @@ public class SqlMM extends SQLiteOpenHelper {
     }
 
     void deleteBestiary(int idToDelete) {
-
         SQLiteDatabase db = getWritableDatabase();
         db.delete(TABLE_MM, TABLE_MM_ID+"=?", new String[] { String.valueOf(idToDelete) });
-
+        db.delete(TABLE_M, TABLE_M_BESTIARY_ID+"=?", new String[] { String.valueOf(idToDelete) });
+        db.close();
     }
 
-    public List<Monster> getMonstersForBestiary(Integer bestiaryId) {
+    public MonsterList getMonstersForBestiary(Integer bestiaryId) {
 
-        ArrayList<Monster> monsterList = new ArrayList<Monster>();
+        MonsterList monsterList = new MonsterList();
 
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -295,8 +304,9 @@ public class SqlMM extends SQLiteOpenHelper {
                 m.id = cursorM.getInt(0);
                 m.name = cursorM.getString(1);
                 m.size = cursorM.getString(2);
-                m.type = cursorM.getString(3);
                 m.alignment = cursorM.getString(4);
+                //must be  called after allignement and size is set
+                m.setType(cursorM.getString(3));
                 m.ac = cursorM.getString(5);
                 m.hp = cursorM.getString(6);
                 m.speed = cursorM.getString(7);
@@ -318,7 +328,7 @@ public class SqlMM extends SQLiteOpenHelper {
                 m.cr = cursorM.getString(23);
                 m.spells = cursorM.getString(24);
                 m.description = cursorM.getString(25);
-                monsterList.add(m);
+                monsterList.AddMonster(m);
             } while (cursorM.moveToNext());
         }
 

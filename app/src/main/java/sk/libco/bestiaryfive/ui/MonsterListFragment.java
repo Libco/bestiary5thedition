@@ -3,15 +3,17 @@ package sk.libco.bestiaryfive.ui;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +62,7 @@ public class MonsterListFragment extends Fragment implements MonsterListAdapter.
 
         mBinding.list.setLayoutManager(new LinearLayoutManager(getContext()));
         mBinding.list.setAdapter(mAdapter);
+        mBinding.list.setNestedScrollingEnabled(false);
 
         loadSharedProperties();
 
@@ -70,9 +73,50 @@ public class MonsterListFragment extends Fragment implements MonsterListAdapter.
             setSortIcon();
         });
 
+        //
+        // Set cut corner background for API 23+
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            view.findViewById(R.id.monster_list_scroll_view).setBackground(getContext().getDrawable(R.drawable.shr_product_grid_background_shape));
+//        }
+        //
+
+        mBinding.buttonGoUp.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mListener.onUpButtonPressed();
+                        //setButtonIcon();
+                    }
+                }
+        );
+
+        mBinding.textviewResult.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mListener.onUpButtonPressed();
+                //setButtonIcon();
+
+            }
+        });
+
+        setButtonIcon();
+
+        setResultTextView();
+
+
         return mBinding.getRoot();
     }
 
+
+    public void setButtonIcon() {
+
+        if (mListener.isBackdropShown()) {
+            mBinding.buttonGoUp.setImageDrawable(this.getResources().getDrawable(R.drawable.ic_keyboard_arrow_up_black_24dp));
+        } else {
+            mBinding.buttonGoUp.setImageDrawable(this.getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_black_24dp));
+        }
+
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -113,6 +157,44 @@ public class MonsterListFragment extends Fragment implements MonsterListAdapter.
             mBinding.list.setAdapter(mAdapter);
             loadSharedProperties();
         }
+
+        setResultTextView();
+    }
+
+    private void setResultTextView() {
+        if(mAdapter != null) {
+            mBinding.textviewResult.setText(mAdapter.getItemCount() + " results");
+        }
+    }
+
+    public boolean changeFilterType(String f, boolean add) {
+
+        boolean result = false;
+
+        if (mAdapter != null) {
+            result = mAdapter.changeFilterByType(f, add);
+        }
+
+        setResultTextView();
+
+        return result;
+    }
+
+    public boolean changeFilterSize(String f, boolean add) {
+
+
+        boolean result = false;
+        if (mAdapter != null) {
+            result = mAdapter.changeFilterBySize(f, add);
+        }
+
+        setResultTextView();
+
+        return result;
+    }
+
+    public List<String> getCurrentFilterType() {
+        return null;
     }
 
     private void loadSharedProperties() {
@@ -132,6 +214,8 @@ public class MonsterListFragment extends Fragment implements MonsterListAdapter.
         if (mAdapter != null) {
             mAdapter.getFilter().filter(string);
         }
+
+        setResultTextView();
     }
 
     @Override
@@ -140,9 +224,16 @@ public class MonsterListFragment extends Fragment implements MonsterListAdapter.
         recyclerViewState = mBinding.list.getLayoutManager().onSaveInstanceState();
     }
 
+    @Override
+    public void onFilterPublishResult() {
+        setResultTextView();
+    }
+
     public interface OnListFragmentInteractionListener {
         void onMonsterSelected(Monster monster);
         List<Monster> getMonsterList();
+        void onUpButtonPressed();
+        boolean isBackdropShown();
     }
 
     //
