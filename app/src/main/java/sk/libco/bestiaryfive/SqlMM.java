@@ -151,6 +151,7 @@ public class SqlMM extends SQLiteOpenHelper {
         }
 
         if(oldVersion == 1 && newVersion == 2) {
+            db.execSQL("DELETE FROM " + TABLE_MM + " WHERE " + TABLE_MM_NAME + " = '5e SRD'");
             db.execSQL("DELETE FROM " + TABLE_M + " WHERE " + TABLE_M_BESTIARY_ID + " NOT IN (SELECT " + TABLE_MM_ID + " FROM " + TABLE_MM + ")");
         }
 

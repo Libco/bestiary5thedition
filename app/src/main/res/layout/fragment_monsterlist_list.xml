@@ -65,5 +65,15 @@
         bind:layout_constraintEnd_toEndOf="parent"
         bind:layout_constraintTop_toTopOf="parent"
         bind:srcCompat="@drawable/ic_keyboard_arrow_up_black_24dp" />
+
+    <TextView
+        android:id="@+id/textview_result"
+        android:layout_width="wrap_content"
+        android:layout_height="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:textAlignment="center"
+        bind:layout_constraintEnd_toStartOf="@+id/button_go_up"
+        bind:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

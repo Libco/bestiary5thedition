@@ -156,6 +156,7 @@ public class MonsterListAdapter extends RecyclerView.Adapter<MonsterViewHolder> 
             protected void publishResults(CharSequence constraint, FilterResults results) {
                 list = (List<MonsterViewModel>) results.values;
                 MonsterListAdapter.this.notifyDataSetChanged();
+                mListener.onFilterPublishResult();
             }
 
             @Override
@@ -244,6 +245,7 @@ public class MonsterListAdapter extends RecyclerView.Adapter<MonsterViewHolder> 
 
     public interface Listener {
         void onMonsterViewModelClicked(MonsterViewModel model);
+        void onFilterPublishResult();
     }
 
 }

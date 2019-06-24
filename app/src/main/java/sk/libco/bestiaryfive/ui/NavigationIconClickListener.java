@@ -62,7 +62,28 @@ public class NavigationIconClickListener implements View.OnClickListener {
         animatorSet.end();
         animatorSet.cancel();
 
-        updateIcon(view);
+        if(view != null) {
+            updateIcon(view);
+        }
+
+
+
+        ///////////
+
+        try {
+            ImageView b = this.sheet.findViewById(R.id.button_go_up);
+            if(b != null) {
+                if (backdropShown) {
+                    b.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_keyboard_arrow_up_black_24dp));
+                } else {
+                    b.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_black_24dp));
+                }
+            }
+        } catch (Exception ignored) {}
+
+
+        ////////
+
 
         final int translateY = height -
                 context.getResources().getDimensionPixelSize(R.dimen.backdrop_reveal_height);
@@ -81,6 +102,8 @@ public class NavigationIconClickListener implements View.OnClickListener {
         animator.start();
 
         //TODO: show how many results we have from filtering
+
+        //sheet.findViewById()
     }
 
     private void updateIcon(View view) {

@@ -1,10 +1,15 @@
 package sk.libco.bestiaryfive;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -13,8 +18,11 @@ public class SRD extends Bestiary{
     static boolean downloadInProgress = false;
     SRDEvents srdEvents;
 
-    public SRD(SRDEvents srdEvents) {
+    private Context context;
+
+    public SRD(Context context, SRDEvents srdEvents) {
         this.srdEvents = srdEvents;
+        this.context = context;
         id = 0;
         name = "5e SRD";
     }
@@ -25,7 +33,7 @@ public class SRD extends Bestiary{
         }
 
         downloadInProgress = true;
-        new DownloadFileFromURL(this).execute("https://raw.githubusercontent.com/Libco/bestiary5thedition/master/files/5e-SRD-Monsters.json");
+        new DownloadFileFromURL(this, context).execute("srd_5e.json");
     }
 
     public interface SRDEvents {
@@ -38,9 +46,11 @@ public class SRD extends Bestiary{
     private static class DownloadFileFromURL extends AsyncTask<String, String, String> {
 
         private final SRD srd;
+        private final Context context;
 
-        DownloadFileFromURL(SRD srd) {
+        DownloadFileFromURL(SRD srd, Context context) {
             this.srd = srd;
+            this.context = context;
         }
 
         /**
@@ -49,38 +59,16 @@ public class SRD extends Bestiary{
         @Override
         protected String doInBackground(String... f_url) {
 
-            int count;
             String strFileContents = "";
+
             try {
+                InputStream stream = context.getAssets().open(f_url[0]);
 
-                URL url = new URL(f_url[0]);
-                URLConnection conection = url.openConnection();
-                conection.connect();
-
-                //  0-100%
-                // progress bar
-                int lenghtOfFile = conection.getContentLength();
-
-                // download the file
-                InputStream input = new BufferedInputStream(url.openStream(),
-                        8192);
-
-                byte data[] = new byte[1024];
-
-                long total = 0;
-
-                while ((count = input.read(data)) != -1) {
-                    total += count;
-                    // publishing the progress....
-                    // After this onProgressUpdate will be called
-                    //publishProgress("" + (int) ((total * 100) / lenghtOfFile));
-
-                    // writing data to string
-                    strFileContents += new String(data, 0, count);
-                }
-
-                // closing streams
-                input.close();
+                int size = stream.available();
+                byte[] buffer = new byte[size];
+                stream.read(buffer);
+                stream.close();
+                strFileContents = new String(buffer);
 
             } catch (Exception e) {
                 Log.e("Error: ", e.getMessage());

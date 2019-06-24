@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
@@ -79,10 +80,43 @@ public class MonsterListFragment extends Fragment implements MonsterListAdapter.
 //        }
         //
 
+        mBinding.buttonGoUp.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mListener.onUpButtonPressed();
+                        //setButtonIcon();
+                    }
+                }
+        );
+
+        mBinding.textviewResult.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mListener.onUpButtonPressed();
+                //setButtonIcon();
+
+            }
+        });
+
+        setButtonIcon();
+
+        setResultTextView();
+
 
         return mBinding.getRoot();
     }
 
+
+    public void setButtonIcon() {
+
+        if (mListener.isBackdropShown()) {
+            mBinding.buttonGoUp.setImageDrawable(this.getResources().getDrawable(R.drawable.ic_keyboard_arrow_up_black_24dp));
+        } else {
+            mBinding.buttonGoUp.setImageDrawable(this.getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_black_24dp));
+        }
+
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -123,24 +157,40 @@ public class MonsterListFragment extends Fragment implements MonsterListAdapter.
             mBinding.list.setAdapter(mAdapter);
             loadSharedProperties();
         }
+
+        setResultTextView();
+    }
+
+    private void setResultTextView() {
+        if(mAdapter != null) {
+            mBinding.textviewResult.setText(mAdapter.getItemCount() + " results");
+        }
     }
 
     public boolean changeFilterType(String f, boolean add) {
 
+        boolean result = false;
+
         if (mAdapter != null) {
-            return mAdapter.changeFilterByType(f, add);
+            result = mAdapter.changeFilterByType(f, add);
         }
 
-        return false;
+        setResultTextView();
+
+        return result;
     }
 
     public boolean changeFilterSize(String f, boolean add) {
 
+
+        boolean result = false;
         if (mAdapter != null) {
-            return mAdapter.changeFilterBySize(f, add);
+            result = mAdapter.changeFilterBySize(f, add);
         }
 
-        return false;
+        setResultTextView();
+
+        return result;
     }
 
     public List<String> getCurrentFilterType() {
@@ -164,6 +214,8 @@ public class MonsterListFragment extends Fragment implements MonsterListAdapter.
         if (mAdapter != null) {
             mAdapter.getFilter().filter(string);
         }
+
+        setResultTextView();
     }
 
     @Override
@@ -172,9 +224,16 @@ public class MonsterListFragment extends Fragment implements MonsterListAdapter.
         recyclerViewState = mBinding.list.getLayoutManager().onSaveInstanceState();
     }
 
+    @Override
+    public void onFilterPublishResult() {
+        setResultTextView();
+    }
+
     public interface OnListFragmentInteractionListener {
         void onMonsterSelected(Monster monster);
         List<Monster> getMonsterList();
+        void onUpButtonPressed();
+        boolean isBackdropShown();
     }
 
     //

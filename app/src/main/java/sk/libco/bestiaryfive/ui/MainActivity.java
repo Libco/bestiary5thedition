@@ -55,6 +55,8 @@ public class MainActivity extends AppCompatActivity implements MonsterListFragme
     private int selectedMonster = -1;
     private int selectedBestiary = 0;
 
+    private NavigationIconClickListener navigationIconClickListener;
+
 
     private Map<String, ArrayList<Chip>> filterCheckbox = new HashMap<String, ArrayList<Chip>>();
 
@@ -152,13 +154,15 @@ public class MainActivity extends AppCompatActivity implements MonsterListFragme
             actionBar.setDisplayShowTitleEnabled(false);
         }
 
-        toolbar.setNavigationOnClickListener(new NavigationIconClickListener(
+        navigationIconClickListener = new NavigationIconClickListener(
                 this,
                 findViewById(R.id.mm_list),
                 findViewById(R.id.my_backdrop),
                 new AccelerateDecelerateInterpolator(),
                 this.getResources().getDrawable(R.drawable.ic_filter_list_black_24dp), // Menu open icon
-                this.getResources().getDrawable(R.drawable.ic_filter_list_black_24dp))); // Menu close icon
+                this.getResources().getDrawable(R.drawable.ic_filter_list_black_24dp));
+
+        toolbar.setNavigationOnClickListener(navigationIconClickListener); // Menu close icon
 
         //
 
@@ -197,18 +201,16 @@ public class MainActivity extends AppCompatActivity implements MonsterListFragme
 
     private void setFilterState() {
 
-        for (Chip chip:filterCheckbox.get("type"))
-        {
-            if(monsterListFragment != null) {
+        if (monsterListFragment != null) {
+            for (Chip chip : filterCheckbox.get("type")) {
                 monsterListFragment.changeFilterType(chip.getText().toString(), chip.isChecked());
             }
-        }
 
-        for (Chip chip:filterCheckbox.get("size"))
-        {
-            if(monsterListFragment != null) {
-                monsterListFragment.changeFilterSize(chip.getText().toString(), chip.isChecked());
+            for (Chip chip : filterCheckbox.get("size")) {
+                    monsterListFragment.changeFilterSize(chip.getText().toString(), chip.isChecked());
             }
+
+
         }
 
     }
@@ -444,6 +446,9 @@ public class MainActivity extends AppCompatActivity implements MonsterListFragme
             }
             bestiaries.loadMonsterDetails(monster);
             monsterFragment.setMonsterToView(monster);
+            if(isBackdropShown()) {
+                navigationIconClickListener.onClick(null);
+            }
         } catch (Exception e) {
             Log.d(TAG, "cannot set monster to view:" + e.toString());
         }
@@ -472,6 +477,16 @@ public class MainActivity extends AppCompatActivity implements MonsterListFragme
             return bestiaries.selectedBestiary.monsters.getMonsters();
         }
         return null;
+    }
+
+    @Override
+    public void onUpButtonPressed() {
+        navigationIconClickListener.onClick(null);
+    }
+
+    @Override
+    public boolean isBackdropShown() {
+        return navigationIconClickListener.isBackdropShown();
     }
 
     @Override

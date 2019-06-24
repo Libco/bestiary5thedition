@@ -94,7 +94,7 @@ public class Bestiaries implements SRD.SRDEvents {
 
             showSnackbar("Downloading 5e SRD");
 
-            SRD srd = new SRD(this);
+            SRD srd = new SRD(context, this);
             srd.downloadFromWeb();
             bestiaries.add(srd);
         }
