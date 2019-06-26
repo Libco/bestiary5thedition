@@ -15,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -95,55 +96,7 @@ public class MainActivity extends AppCompatActivity implements MonsterListFragme
 
         // FILTERS
 
-        ChipGroup chipGroupType = findViewById(R.id.chipGroupType);
-        ArrayList<Chip> filterDictionary = new ArrayList<Chip>();
-        for (String type:bestiaries.selectedBestiary.monsters.getTypeFilter()) {
-            ChipDrawable chipDrawable = ChipDrawable.createFromResource(this, R.xml.filter_chip);
-            chipDrawable.setBounds(0, 0, chipDrawable.getIntrinsicWidth(), chipDrawable.getIntrinsicHeight());
-            chipDrawable.setText(type);
-            Chip chip = new Chip(this);
-            chip.setChipDrawable(chipDrawable);
-            chip.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-                }
-            });
-            chip.setOnCheckedChangeListener((compoundButton, b) -> {
-                setFilterState();
-            });
-            
-            chipGroupType.addView(chip);
-            filterDictionary.add(chip);
-        }
-        filterCheckbox.put("type", filterDictionary);
-
-
-        ChipGroup chipGroupSize = findViewById(R.id.chipGroupSize);
-        filterDictionary = new ArrayList<Chip>();
-        for (String type:bestiaries.selectedBestiary.monsters.getSizeFilter()) {
-            ChipDrawable chipDrawable = ChipDrawable.createFromResource(this, R.xml.filter_chip);
-            chipDrawable.setBounds(0, 0, chipDrawable.getIntrinsicWidth(), chipDrawable.getIntrinsicHeight());
-            chipDrawable.setText(type);
-            Chip chip = new Chip(this);
-            chip.setChipDrawable(chipDrawable);
-            //must be implemented to be checkable for some reason.....................
-            chip.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Log.d(TAG, "onClick");
-                }
-            });
-            chip.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                    setFilterState();
-                }
-            });
-            chipGroupSize.addView(chip);
-            filterDictionary.add(chip);
-        }
-        filterCheckbox.put("size", filterDictionary);
+        setFilters();
 
         //
 
@@ -199,6 +152,85 @@ public class MainActivity extends AppCompatActivity implements MonsterListFragme
 
     }
 
+    private void setFilters() {
+
+        filterCheckbox.clear();
+
+        // Type filter
+        ChipGroup chipGroupType = findViewById(R.id.chipGroupType);
+        if(chipGroupType != null) {
+            chipGroupType.removeAllViews();
+
+            ArrayList<Chip> filterDictionary = new ArrayList<Chip>();
+            for (String type : bestiaries.selectedBestiary.monsters.getTypeFilter()) {
+                ChipDrawable chipDrawable = ChipDrawable.createFromResource(this, R.xml.filter_chip);
+                chipDrawable.setBounds(0, 0, chipDrawable.getIntrinsicWidth(), chipDrawable.getIntrinsicHeight());
+                chipDrawable.setText(type);
+                Chip chip = new Chip(this);
+                chip.setChipDrawable(chipDrawable);
+                chip.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                    }
+                });
+                chip.setOnCheckedChangeListener((compoundButton, b) -> {
+                    setFilterState();
+                });
+
+                chipGroupType.addView(chip);
+                filterDictionary.add(chip);
+            }
+            filterCheckbox.put("type", filterDictionary);
+        }
+
+
+        // Size filter
+        ChipGroup chipGroupSize = findViewById(R.id.chipGroupSize);
+        if(chipGroupSize != null) {
+            chipGroupSize.removeAllViews();
+
+            ArrayList<Chip> filterDictionary = new ArrayList<Chip>();
+            for (String type : bestiaries.selectedBestiary.monsters.getSizeFilter()) {
+                ChipDrawable chipDrawable = ChipDrawable.createFromResource(this, R.xml.filter_chip);
+                chipDrawable.setBounds(0, 0, chipDrawable.getIntrinsicWidth(), chipDrawable.getIntrinsicHeight());
+                chipDrawable.setText(type);
+                Chip chip = new Chip(this);
+                chip.setChipDrawable(chipDrawable);
+                //must be implemented to be checkable for some reason.....................
+                chip.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Log.d(TAG, "onClick");
+                    }
+                });
+                chip.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                        setFilterState();
+                    }
+                });
+                chipGroupSize.addView(chip);
+                filterDictionary.add(chip);
+            }
+            filterCheckbox.put("size", filterDictionary);
+        }
+
+        TextView mmLabel = findViewById(R.id.mmLabel);
+        if (mmLabel != null) {
+            String bLabel = "Monster Manual";
+            if(bestiaries.selectedBestiary != null) {
+                bLabel = bestiaries.selectedBestiary.name;
+                if(bLabel.equals("All") && bestiaries.getBestiariesCount() > 1) {
+                    bLabel = "All Monster Manuals";
+                }
+            }
+
+            mmLabel.setText(bLabel);
+        }
+
+    }
+
     private void setFilterState() {
 
         if (monsterListFragment != null) {
@@ -209,8 +241,6 @@ public class MainActivity extends AppCompatActivity implements MonsterListFragme
             for (Chip chip : filterCheckbox.get("size")) {
                     monsterListFragment.changeFilterSize(chip.getText().toString(), chip.isChecked());
             }
-
-
         }
 
     }
@@ -506,5 +536,11 @@ public class MainActivity extends AppCompatActivity implements MonsterListFragme
                 monsterListFragment.setMonsterList(null);
         }
 
+        setFilters();
+    }
+
+    @Override
+    public void onSelectedBestiaryChange() {
+        setFilters();
     }
 }

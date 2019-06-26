@@ -115,6 +115,7 @@ public class Bestiaries implements SRD.SRDEvents {
                 selectedBestiary.monsters = sql.getMonstersForBestiary(selectedBestiary.id);
             }
             Log.d(TAG,"bestiary set to: " + selectedBestiary.name);
+            bestiaryEvent.onSelectedBestiaryChange();
             return position;
         } else {
             return 0;
@@ -239,6 +240,7 @@ public class Bestiaries implements SRD.SRDEvents {
 
     public interface BestiaryEvent {
         void onBestiaryChange();
+        void onSelectedBestiaryChange();
     }
 
 

@@ -70,6 +70,11 @@ public class ImportActivity extends AppCompatActivity implements Bestiaries.Best
     }
 
     @Override
+    public void onSelectedBestiaryChange() {
+
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
