@@ -104,6 +104,9 @@ public class BestiaryParser {
                     readTraits(parser, newTrait, parserName);
                     //Log.d(TAG,"added new reaction: " + newTrait.name);
                 }
+                else if(parserName.equals("type")) {
+                   monster.setType(readString(parser, parserName));
+                }
                 else{
                     Field field = Monster.class.getField(parserName);
                     field.set(monster, readString(parser, parserName));

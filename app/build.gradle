@@ -7,8 +7,8 @@ android {
         applicationId "sk.libco.bestiaryfive"
         minSdkVersion 19
         targetSdkVersion 29
-        versionCode 12
-        versionName "1.0"
+        versionCode 13
+        versionName "1.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
