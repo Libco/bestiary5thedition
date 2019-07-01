@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
@@ -63,6 +64,8 @@ public class MainActivity extends AppCompatActivity implements MonsterListFragme
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
 
         //
         bestiaries = new Bestiaries(this, this);
