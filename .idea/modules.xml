@@ -2,8 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/BestiaryFive.iml" filepath="$PROJECT_DIR$/BestiaryFive.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/bestiary5thedition.iml" filepath="$PROJECT_DIR$/.idea/modules/bestiary5thedition.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/bestiary5thedition.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/bestiary5thedition.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/bestiary5thedition.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/bestiary5thedition.app.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/bestiary5thedition.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/bestiary5thedition.app.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/bestiary5thedition.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/bestiary5thedition.app.unitTest.iml" />
     </modules>
   </component>
 </project>

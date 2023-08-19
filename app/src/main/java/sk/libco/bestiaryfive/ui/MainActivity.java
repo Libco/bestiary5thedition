@@ -3,6 +3,8 @@ package sk.libco.bestiaryfive.ui;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -168,9 +170,10 @@ public class MainActivity extends AppCompatActivity implements MonsterListFragme
             for (String type : bestiaries.selectedBestiary.monsters.getTypeFilter()) {
                 ChipDrawable chipDrawable = ChipDrawable.createFromResource(this, R.xml.filter_chip);
                 chipDrawable.setBounds(0, 0, chipDrawable.getIntrinsicWidth(), chipDrawable.getIntrinsicHeight());
-                chipDrawable.setText(type);
                 Chip chip = new Chip(this);
                 chip.setChipDrawable(chipDrawable);
+                chip.setText(type);
+
                 chip.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -197,9 +200,10 @@ public class MainActivity extends AppCompatActivity implements MonsterListFragme
             for (String type : bestiaries.selectedBestiary.monsters.getSizeFilter()) {
                 ChipDrawable chipDrawable = ChipDrawable.createFromResource(this, R.xml.filter_chip);
                 chipDrawable.setBounds(0, 0, chipDrawable.getIntrinsicWidth(), chipDrawable.getIntrinsicHeight());
-                chipDrawable.setText(type);
                 Chip chip = new Chip(this);
                 chip.setChipDrawable(chipDrawable);
+                chip.setText(type);
+
                 //must be implemented to be checkable for some reason.....................
                 chip.setOnClickListener(new View.OnClickListener() {
                     @Override

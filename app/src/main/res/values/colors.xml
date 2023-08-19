@@ -6,4 +6,5 @@
 
     <color name="white">#FFFFFF</color>
     <color name="textBigRed">#7a200d</color>
+    <color name="textPrimary">#333333</color>
 </resources>

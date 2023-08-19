@@ -1,0 +1,1088 @@
+Index: app/src/androidTest/java/sk/libco/bestiaryfive/ExampleInstrumentedTest.java
+===================================================================
+diff --git a/app/src/androidTest/java/sk/libco/bestiaryfive/ExampleInstrumentedTest.java b/app/src/androidTest/java/sk/libco/bestiaryfive/ExampleInstrumentedTest.java
+deleted file mode 100644
+--- a/app/src/androidTest/java/sk/libco/bestiaryfive/ExampleInstrumentedTest.java	(revision 10b43da3b8261f8fb37a4ca9eaac8c0badec94b6)
++++ /dev/null	(revision 10b43da3b8261f8fb37a4ca9eaac8c0badec94b6)
+@@ -1,26 +0,0 @@
+-package sk.libco.bestiaryfive;
+-
+-import android.content.Context;
+-import android.support.test.InstrumentationRegistry;
+-import android.support.test.runner.AndroidJUnit4;
+-
+-import org.junit.Test;
+-import org.junit.runner.RunWith;
+-
+-import static org.junit.Assert.*;
+-
+-/**
+- * Instrumentation test, which will execute on an Android device.
+- *
+- * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
+- */
+-@RunWith(AndroidJUnit4.class)
+-public class ExampleInstrumentedTest {
+-    @Test
+-    public void useAppContext() throws Exception {
+-        // Context of the app under test.
+-        Context appContext = InstrumentationRegistry.getTargetContext();
+-
+-        assertEquals("sk.libco.bestiaryfive", appContext.getPackageName());
+-    }
+-}
+Index: app/src/androidTest/java/sk/libco/bestiaryfive/ui/MainActivityTest.java
+===================================================================
+diff --git a/app/src/androidTest/java/sk/libco/bestiaryfive/ui/MainActivityTest.java b/app/src/androidTest/java/sk/libco/bestiaryfive/ui/MainActivityTest.java
+deleted file mode 100644
+--- a/app/src/androidTest/java/sk/libco/bestiaryfive/ui/MainActivityTest.java	(revision 10b43da3b8261f8fb37a4ca9eaac8c0badec94b6)
++++ /dev/null	(revision 10b43da3b8261f8fb37a4ca9eaac8c0badec94b6)
+@@ -1,78 +0,0 @@
+-package sk.libco.bestiaryfive.ui;
+-
+-
+-import android.support.test.espresso.ViewInteraction;
+-import android.support.test.rule.ActivityTestRule;
+-import android.support.test.runner.AndroidJUnit4;
+-import android.test.suitebuilder.annotation.LargeTest;
+-
+-import org.junit.Rule;
+-import org.junit.Test;
+-import org.junit.runner.RunWith;
+-
+-import sk.libco.bestiaryfive.R;
+-
+-import static android.support.test.InstrumentationRegistry.getInstrumentation;
+-import static android.support.test.espresso.Espresso.onView;
+-import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
+-import static android.support.test.espresso.action.ViewActions.click;
+-import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
+-import static android.support.test.espresso.action.ViewActions.pressImeActionButton;
+-import static android.support.test.espresso.action.ViewActions.replaceText;
+-import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+-import static android.support.test.espresso.matcher.ViewMatchers.withContentDescription;
+-import static android.support.test.espresso.matcher.ViewMatchers.withId;
+-import static android.support.test.espresso.matcher.ViewMatchers.withParent;
+-import static android.support.test.espresso.matcher.ViewMatchers.withText;
+-import static org.hamcrest.Matchers.allOf;
+-
+-@LargeTest
+-@RunWith(AndroidJUnit4.class)
+-public class MainActivityTest {
+-
+-    @Rule
+-    public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
+-
+-    @Test
+-    public void mainActivityTest() {
+-        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+-
+-        ViewInteraction appCompatTextView = onView(
+-                allOf(withId(R.id.title), withText("Import file"), isDisplayed()));
+-        appCompatTextView.perform(click());
+-
+-        ViewInteraction actionMenuItemView = onView(
+-                allOf(withId(R.id.search), withContentDescription("Search"), isDisplayed()));
+-        actionMenuItemView.perform(click());
+-
+-        ViewInteraction searchAutoComplete = onView(
+-                allOf(withId(R.id.search_src_text),
+-                        withParent(allOf(withId(R.id.search_plate),
+-                                withParent(withId(R.id.search_edit_frame)))),
+-                        isDisplayed()));
+-        searchAutoComplete.perform(replaceText("beho"), closeSoftKeyboard());
+-
+-        ViewInteraction searchAutoComplete2 = onView(
+-                allOf(withId(R.id.search_src_text), withText("beho"),
+-                        withParent(allOf(withId(R.id.search_plate),
+-                                withParent(withId(R.id.search_edit_frame)))),
+-                        isDisplayed()));
+-        searchAutoComplete2.perform(pressImeActionButton());
+-
+-        ViewInteraction appCompatImageView = onView(
+-                allOf(withId(R.id.search_close_btn), withContentDescription("Clear query"),
+-                        withParent(allOf(withId(R.id.search_plate),
+-                                withParent(withId(R.id.search_edit_frame)))),
+-                        isDisplayed()));
+-        appCompatImageView.perform(click());
+-
+-        ViewInteraction appCompatImageButton = onView(
+-                allOf(withContentDescription("Collapse"),
+-                        withParent(allOf(withId(R.id.toolbar),
+-                                withParent(withId(R.id.activity_main)))),
+-                        isDisplayed()));
+-        appCompatImageButton.perform(click());
+-
+-    }
+-
+-}
+Index: .idea/runConfigurations.xml
+===================================================================
+diff --git a/.idea/runConfigurations.xml b/.idea/runConfigurations.xml
+deleted file mode 100644
+--- a/.idea/runConfigurations.xml	(revision 10b43da3b8261f8fb37a4ca9eaac8c0badec94b6)
++++ /dev/null	(revision 10b43da3b8261f8fb37a4ca9eaac8c0badec94b6)
+@@ -1,12 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+-<project version="4">
+-  <component name="RunConfigurationProducerService">
+-    <option name="ignoredProducers">
+-      <set>
+-        <option value="org.jetbrains.plugins.gradle.execution.test.runner.AllInPackageGradleConfigurationProducer" />
+-        <option value="org.jetbrains.plugins.gradle.execution.test.runner.TestClassGradleConfigurationProducer" />
+-        <option value="org.jetbrains.plugins.gradle.execution.test.runner.TestMethodGradleConfigurationProducer" />
+-      </set>
+-    </option>
+-  </component>
+-</project>
+\ No newline at end of file
+Index: .idea/gradle.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"GradleSettings\">\n    <option name=\"linkedExternalProjectsSettings\">\n      <GradleProjectSettings>\n        <compositeConfiguration>\n          <compositeBuild compositeDefinitionSource=\"SCRIPT\" />\n        </compositeConfiguration>\n        <option name=\"distributionType\" value=\"DEFAULT_WRAPPED\" />\n        <option name=\"externalProjectPath\" value=\"$PROJECT_DIR$\" />\n        <option name=\"resolveModulePerSourceSet\" value=\"false\" />\n      </GradleProjectSettings>\n    </option>\n  </component>\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/gradle.xml b/.idea/gradle.xml
+--- a/.idea/gradle.xml	(revision 10b43da3b8261f8fb37a4ca9eaac8c0badec94b6)
++++ b/.idea/gradle.xml	(date 1692448898225)
+@@ -1,14 +1,19 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
++  <component name="GradleMigrationSettings" migrationVersion="1" />
+   <component name="GradleSettings">
+     <option name="linkedExternalProjectsSettings">
+       <GradleProjectSettings>
+-        <compositeConfiguration>
+-          <compositeBuild compositeDefinitionSource="SCRIPT" />
+-        </compositeConfiguration>
++        <option name="testRunner" value="GRADLE" />
+         <option name="distributionType" value="DEFAULT_WRAPPED" />
+         <option name="externalProjectPath" value="$PROJECT_DIR$" />
+-        <option name="resolveModulePerSourceSet" value="false" />
++        <option name="gradleJvm" value="jbr-17" />
++        <option name="modules">
++          <set>
++            <option value="$PROJECT_DIR$" />
++            <option value="$PROJECT_DIR$/app" />
++          </set>
++        </option>
+       </GradleProjectSettings>
+     </option>
+   </component>
+Index: app/src/main/AndroidManifest.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\n<manifest xmlns:android=\"http://schemas.android.com/apk/res/android\"\n    package=\"sk.libco.bestiaryfive\">\n\n    <application\n        android:allowBackup=\"true\"\n        android:icon=\"@mipmap/ic_launcher\"\n        android:label=\"@string/app_name\"\n        android:supportsRtl=\"true\"\n        android:theme=\"@style/AppTheme\">\n        <activity android:name=\".ui.MainActivity\">\n            <intent-filter>\n                <action android:name=\"android.intent.action.MAIN\" />\n\n                <category android:name=\"android.intent.category.LAUNCHER\" />\n            </intent-filter>\n        </activity>\n        <activity\n            android:name=\".ui.InfoActivity\"\n            android:label=\"@string/title_activity_info\"\n            android:parentActivityName=\".ui.MainActivity\"\n            android:theme=\"@style/AppTheme\">\n            <meta-data\n                android:name=\"android.support.PARENT_ACTIVITY\"\n                android:value=\"sk.libco.bestiaryfive.ui.MainActivity\" />\n        </activity>\n        <activity\n            android:name=\".ui.ImportActivity\"\n            android:label=\"@string/title_activity_import\"\n            android:parentActivityName=\".ui.MainActivity\"\n            android:theme=\"@style/AppTheme\">\n            <meta-data\n                android:name=\"android.support.PARENT_ACTIVITY\"\n                android:value=\"sk.libco.bestiaryfive.ui.MainActivity\" />\n        </activity>\n    </application>\n\n</manifest>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/AndroidManifest.xml b/app/src/main/AndroidManifest.xml
+--- a/app/src/main/AndroidManifest.xml	(revision 10b43da3b8261f8fb37a4ca9eaac8c0badec94b6)
++++ b/app/src/main/AndroidManifest.xml	(date 1692450001792)
+@@ -1,6 +1,5 @@
+ <?xml version="1.0" encoding="utf-8"?>
+-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+-    package="sk.libco.bestiaryfive">
++<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+ 
+     <application
+         android:allowBackup="true"
+@@ -8,7 +7,8 @@
+         android:label="@string/app_name"
+         android:supportsRtl="true"
+         android:theme="@style/AppTheme">
+-        <activity android:name=".ui.MainActivity">
++        <activity android:name=".ui.MainActivity"
++            android:exported="true">
+             <intent-filter>
+                 <action android:name="android.intent.action.MAIN" />
+ 
+Index: app/src/main/res/layout/content_backdrop_filter.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\n<merge xmlns:app=\"http://schemas.android.com/apk/res-auto\"\n    xmlns:tools=\"http://schemas.android.com/tools\"\n    xmlns:android=\"http://schemas.android.com/apk/res/android\"\n    tools:showIn=\"@layout/activity_main\">\n    <ScrollView\n        android:layout_width=\"match_parent\"\n        android:layout_height=\"match_parent\">\n    <LinearLayout\n        android:id=\"@+id/linearLayout\"\n        android:layout_width=\"match_parent\"\n        android:layout_height=\"match_parent\"\n        android:orientation=\"vertical\">\n\n        <TextView\n            android:id=\"@+id/textView1\"\n            android:layout_width=\"match_parent\"\n            android:layout_height=\"wrap_content\"\n            android:layout_marginTop=\"8dp\"\n            android:text=\"Monster manual\"\n            android:textColor=\"@color/white\" />\n\n        <Spinner\n            android:id=\"@+id/spinner_nav\"\n            android:layout_width=\"wrap_content\"\n            android:layout_height=\"wrap_content\"\n            android:layout_marginTop=\"12dp\"\n            />\n\n        <TextView\n            android:id=\"@+id/textView2\"\n            android:layout_width=\"match_parent\"\n            android:layout_height=\"wrap_content\"\n\n            android:layout_marginTop=\"8dp\"\n            android:text=\"Creature type\"\n            android:textColor=\"@color/white\" />\n\n        <com.google.android.material.chip.ChipGroup\n            android:id=\"@+id/chipGroupType\"\n            android:layout_width=\"match_parent\"\n            android:layout_height=\"wrap_content\"\n            android:layout_marginTop=\"12dp\">\n\n            <!--<android.support.design.chip.Chip-->\n            <!--style=\"@style/Widget.MaterialComponents.Chip.Filter\"-->\n            <!--android:layout_width=\"wrap_content\"-->\n            <!--android:layout_height=\"wrap_content\"-->\n            <!--android:text=\"Beast\" />-->\n\n            <!--<android.support.design.chip.Chip-->\n            <!--style=\"@style/Widget.MaterialComponents.Chip.Filter\"-->\n            <!--android:layout_width=\"wrap_content\"-->\n            <!--android:layout_height=\"wrap_content\"-->\n            <!--android:text=\"Monstrosity\" />-->\n\n        </com.google.android.material.chip.ChipGroup>\n\n        <TextView\n            android:id=\"@+id/textView5\"\n            android:layout_width=\"match_parent\"\n            android:layout_height=\"wrap_content\"\n            android:layout_marginStart=\"4dp\"\n            android:layout_marginTop=\"12dp\"\n            android:layout_marginEnd=\"4dp\"\n            android:text=\"Size\"\n            android:textColor=\"@color/white\" />\n\n        <com.google.android.material.chip.ChipGroup\n            android:id=\"@+id/chipGroupSize\"\n            android:layout_width=\"match_parent\"\n            android:layout_height=\"wrap_content\"\n            android:layout_marginTop=\"8dp\">\n\n            <!--<android.support.design.chip.Chip-->\n            <!--style=\"@style/Widget.MaterialComponents.Chip.Filter\"-->\n            <!--android:layout_width=\"wrap_content\"-->\n            <!--android:layout_height=\"wrap_content\"-->\n            <!--android:text=\"Beast\" />-->\n\n            <!--<android.support.design.chip.Chip-->\n            <!--style=\"@style/Widget.MaterialComponents.Chip.Filter\"-->\n            <!--android:layout_width=\"wrap_content\"-->\n            <!--android:layout_height=\"wrap_content\"-->\n            <!--android:text=\"Monstrosity\" />-->\n\n        </com.google.android.material.chip.ChipGroup>\n\n    </LinearLayout>\n    </ScrollView>\n</merge>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/content_backdrop_filter.xml b/app/src/main/res/layout/content_backdrop_filter.xml
+--- a/app/src/main/res/layout/content_backdrop_filter.xml	(revision 10b43da3b8261f8fb37a4ca9eaac8c0badec94b6)
++++ b/app/src/main/res/layout/content_backdrop_filter.xml	(date 1692468781817)
+@@ -22,6 +22,8 @@
+ 
+         <Spinner
+             android:id="@+id/spinner_nav"
++            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
++            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_marginTop="12dp"
+@@ -41,19 +43,6 @@
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:layout_marginTop="12dp">
+-
+-            <!--<android.support.design.chip.Chip-->
+-            <!--style="@style/Widget.MaterialComponents.Chip.Filter"-->
+-            <!--android:layout_width="wrap_content"-->
+-            <!--android:layout_height="wrap_content"-->
+-            <!--android:text="Beast" />-->
+-
+-            <!--<android.support.design.chip.Chip-->
+-            <!--style="@style/Widget.MaterialComponents.Chip.Filter"-->
+-            <!--android:layout_width="wrap_content"-->
+-            <!--android:layout_height="wrap_content"-->
+-            <!--android:text="Monstrosity" />-->
+-
+         </com.google.android.material.chip.ChipGroup>
+ 
+         <TextView
+Index: gradlew
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>#!/usr/bin/env bash\n\n##############################################################################\n##\n##  Gradle start up script for UN*X\n##\n##############################################################################\n\nLC_NUMERIC=\"en_US.UTF-8\"\n\n# Add default JVM options here. You can also use JAVA_OPTS and GRADLE_OPTS to pass JVM options to this script.\nDEFAULT_JVM_OPTS=\"\"\n\nAPP_NAME=\"Gradle\"\nAPP_BASE_NAME=`basename \"$0\"`\n\n# Use the maximum available, or set MAX_FD != -1 to use that value.\nMAX_FD=\"maximum\"\n\nwarn ( ) {\n    echo \"$*\"\n}\n\ndie ( ) {\n    echo\n    echo \"$*\"\n    echo\n    exit 1\n}\n\n# OS specific support (must be 'true' or 'false').\ncygwin=false\nmsys=false\ndarwin=false\ncase \"`uname`\" in\n  CYGWIN* )\n    cygwin=true\n    ;;\n  Darwin* )\n    darwin=true\n    ;;\n  MINGW* )\n    msys=true\n    ;;\nesac\n\n# Attempt to set APP_HOME\n# Resolve links: $0 may be a link\nPRG=\"$0\"\n# Need this for relative symlinks.\nwhile [ -h \"$PRG\" ] ; do\n    ls=`ls -ld \"$PRG\"`\n    link=`expr \"$ls\" : '.*-> \\(.*\\)$'`\n    if expr \"$link\" : '/.*' > /dev/null; then\n        PRG=\"$link\"\n    else\n        PRG=`dirname \"$PRG\"`\"/$link\"\n    fi\ndone\nSAVED=\"`pwd`\"\ncd \"`dirname \\\"$PRG\\\"`/\" >/dev/null\nAPP_HOME=\"`pwd -P`\"\ncd \"$SAVED\" >/dev/null\n\nCLASSPATH=$APP_HOME/gradle/wrapper/gradle-wrapper.jar\n\n# Determine the Java command to use to start the JVM.\nif [ -n \"$JAVA_HOME\" ] ; then\n    if [ -x \"$JAVA_HOME/jre/sh/java\" ] ; then\n        # IBM's JDK on AIX uses strange locations for the executables\n        JAVACMD=\"$JAVA_HOME/jre/sh/java\"\n    else\n        JAVACMD=\"$JAVA_HOME/bin/java\"\n    fi\n    if [ ! -x \"$JAVACMD\" ] ; then\n        die \"ERROR: JAVA_HOME is set to an invalid directory: $JAVA_HOME\n\nPlease set the JAVA_HOME variable in your environment to match the\nlocation of your Java installation.\"\n    fi\nelse\n    JAVACMD=\"java\"\n    which java >/dev/null 2>&1 || die \"ERROR: JAVA_HOME is not set and no 'java' command could be found in your PATH.\n\nPlease set the JAVA_HOME variable in your environment to match the\nlocation of your Java installation.\"\nfi\n\n# Increase the maximum file descriptors if we can.\nif [ \"$cygwin\" = \"false\" -a \"$darwin\" = \"false\" ] ; then\n    MAX_FD_LIMIT=`ulimit -H -n`\n    if [ $? -eq 0 ] ; then\n        if [ \"$MAX_FD\" = \"maximum\" -o \"$MAX_FD\" = \"max\" ] ; then\n            MAX_FD=\"$MAX_FD_LIMIT\"\n        fi\n        ulimit -n $MAX_FD\n        if [ $? -ne 0 ] ; then\n            warn \"Could not set maximum file descriptor limit: $MAX_FD\"\n        fi\n    else\n        warn \"Could not query maximum file descriptor limit: $MAX_FD_LIMIT\"\n    fi\nfi\n\n# For Darwin, add options to specify how the application appears in the dock\nif $darwin; then\n    GRADLE_OPTS=\"$GRADLE_OPTS \\\"-Xdock:name=$APP_NAME\\\" \\\"-Xdock:icon=$APP_HOME/media/gradle.icns\\\"\"\nfi\n\n# For Cygwin, switch paths to Windows format before running java\nif $cygwin ; then\n    APP_HOME=`cygpath --path --mixed \"$APP_HOME\"`\n    CLASSPATH=`cygpath --path --mixed \"$CLASSPATH\"`\n    JAVACMD=`cygpath --unix \"$JAVACMD\"`\n\n    # We build the pattern for arguments to be converted via cygpath\n    ROOTDIRSRAW=`find -L / -maxdepth 1 -mindepth 1 -type d 2>/dev/null`\n    SEP=\"\"\n    for dir in $ROOTDIRSRAW ; do\n        ROOTDIRS=\"$ROOTDIRS$SEP$dir\"\n        SEP=\"|\"\n    done\n    OURCYGPATTERN=\"(^($ROOTDIRS))\"\n    # Add a user-defined pattern to the cygpath arguments\n    if [ \"$GRADLE_CYGPATTERN\" != \"\" ] ; then\n        OURCYGPATTERN=\"$OURCYGPATTERN|($GRADLE_CYGPATTERN)\"\n    fi\n    # Now convert the arguments - kludge to limit ourselves to /bin/sh\n    i=0\n    for arg in \"$@\" ; do\n        CHECK=`echo \"$arg\"|egrep -c \"$OURCYGPATTERN\" -`\n        CHECK2=`echo \"$arg\"|egrep -c \"^-\"`                                 ### Determine if an option\n\n        if [ $CHECK -ne 0 ] && [ $CHECK2 -eq 0 ] ; then                    ### Added a condition\n            eval `echo args$i`=`cygpath --path --ignore --mixed \"$arg\"`\n        else\n            eval `echo args$i`=\"\\\"$arg\\\"\"\n        fi\n        i=$((i+1))\n    done\n    case $i in\n        (0) set -- ;;\n        (1) set -- \"$args0\" ;;\n        (2) set -- \"$args0\" \"$args1\" ;;\n        (3) set -- \"$args0\" \"$args1\" \"$args2\" ;;\n        (4) set -- \"$args0\" \"$args1\" \"$args2\" \"$args3\" ;;\n        (5) set -- \"$args0\" \"$args1\" \"$args2\" \"$args3\" \"$args4\" ;;\n        (6) set -- \"$args0\" \"$args1\" \"$args2\" \"$args3\" \"$args4\" \"$args5\" ;;\n        (7) set -- \"$args0\" \"$args1\" \"$args2\" \"$args3\" \"$args4\" \"$args5\" \"$args6\" ;;\n        (8) set -- \"$args0\" \"$args1\" \"$args2\" \"$args3\" \"$args4\" \"$args5\" \"$args6\" \"$args7\" ;;\n        (9) set -- \"$args0\" \"$args1\" \"$args2\" \"$args3\" \"$args4\" \"$args5\" \"$args6\" \"$args7\" \"$args8\" ;;\n    esac\nfi\n\n# Split up the JVM_OPTS And GRADLE_OPTS values into an array, following the shell quoting and substitution rules\nfunction splitJvmOpts() {\n    JVM_OPTS=(\"$@\")\n}\neval splitJvmOpts $DEFAULT_JVM_OPTS $JAVA_OPTS $GRADLE_OPTS\nJVM_OPTS[${#JVM_OPTS[*]}]=\"-Dorg.gradle.appname=$APP_BASE_NAME\"\n\nexec \"$JAVACMD\" \"${JVM_OPTS[@]}\" -classpath \"$CLASSPATH\" org.gradle.wrapper.GradleWrapperMain \"$@\"\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/gradlew b/gradlew
+--- a/gradlew	(revision 10b43da3b8261f8fb37a4ca9eaac8c0badec94b6)
++++ b/gradlew	(date 1692448854382)
+@@ -1,76 +1,129 @@
+-#!/usr/bin/env bash
++#!/bin/sh
++
++#
++# Copyright © 2015-2021 the original authors.
++#
++# Licensed under the Apache License, Version 2.0 (the "License");
++# you may not use this file except in compliance with the License.
++# You may obtain a copy of the License at
++#
++#      https://www.apache.org/licenses/LICENSE-2.0
++#
++# Unless required by applicable law or agreed to in writing, software
++# distributed under the License is distributed on an "AS IS" BASIS,
++# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++# See the License for the specific language governing permissions and
++# limitations under the License.
++#
+ 
+ ##############################################################################
+-##
+-##  Gradle start up script for UN*X
+-##
++#
++#   Gradle start up script for POSIX generated by Gradle.
++#
++#   Important for running:
++#
++#   (1) You need a POSIX-compliant shell to run this script. If your /bin/sh is
++#       noncompliant, but you have some other compliant shell such as ksh or
++#       bash, then to run this script, type that shell name before the whole
++#       command line, like:
++#
++#           ksh Gradle
++#
++#       Busybox and similar reduced shells will NOT work, because this script
++#       requires all of these POSIX shell features:
++#         * functions;
++#         * expansions «$var», «${var}», «${var:-default}», «${var+SET}»,
++#           «${var#prefix}», «${var%suffix}», and «$( cmd )»;
++#         * compound commands having a testable exit status, especially «case»;
++#         * various built-in commands including «command», «set», and «ulimit».
++#
++#   Important for patching:
++#
++#   (2) This script targets any POSIX shell, so it avoids extensions provided
++#       by Bash, Ksh, etc; in particular arrays are avoided.
++#
++#       The "traditional" practice of packing multiple parameters into a
++#       space-separated string is a well documented source of bugs and security
++#       problems, so this is (mostly) avoided, by progressively accumulating
++#       options in "$@", and eventually passing that to Java.
++#
++#       Where the inherited environment variables (DEFAULT_JVM_OPTS, JAVA_OPTS,
++#       and GRADLE_OPTS) rely on word-splitting, this is performed explicitly;
++#       see the in-line comments for details.
++#
++#       There are tweaks for specific operating systems such as AIX, CygWin,
++#       Darwin, MinGW, and NonStop.
++#
++#   (3) This script is generated from the Groovy template
++#       https://github.com/gradle/gradle/blob/master/subprojects/plugins/src/main/resources/org/gradle/api/internal/plugins/unixStartScript.txt
++#       within the Gradle project.
++#
++#       You can find Gradle at https://github.com/gradle/gradle/.
++#
+ ##############################################################################
+ 
+-LC_NUMERIC="en_US.UTF-8"
++# Attempt to set APP_HOME
++
++# Resolve links: $0 may be a link
++app_path=$0
++
++# Need this for daisy-chained symlinks.
++while
++    APP_HOME=${app_path%"${app_path##*/}"}  # leaves a trailing /; empty if no leading path
++    [ -h "$app_path" ]
++do
++    ls=$( ls -ld "$app_path" )
++    link=${ls#*' -> '}
++    case $link in             #(
++      /*)   app_path=$link ;; #(
++      *)    app_path=$APP_HOME$link ;;
++    esac
++done
++
++APP_HOME=$( cd "${APP_HOME:-./}" && pwd -P ) || exit
++
++APP_NAME="Gradle"
++APP_BASE_NAME=${0##*/}
+ 
+ # Add default JVM options here. You can also use JAVA_OPTS and GRADLE_OPTS to pass JVM options to this script.
+-DEFAULT_JVM_OPTS=""
+-
+-APP_NAME="Gradle"
+-APP_BASE_NAME=`basename "$0"`
++DEFAULT_JVM_OPTS='"-Xmx64m" "-Xms64m"'
+ 
+ # Use the maximum available, or set MAX_FD != -1 to use that value.
+-MAX_FD="maximum"
++MAX_FD=maximum
+ 
+-warn ( ) {
++warn () {
+     echo "$*"
+-}
++} >&2
+ 
+-die ( ) {
++die () {
+     echo
+     echo "$*"
+     echo
+     exit 1
+-}
++} >&2
+ 
+ # OS specific support (must be 'true' or 'false').
+ cygwin=false
+ msys=false
+ darwin=false
+-case "`uname`" in
+-  CYGWIN* )
+-    cygwin=true
+-    ;;
+-  Darwin* )
+-    darwin=true
+-    ;;
+-  MINGW* )
+-    msys=true
+-    ;;
++nonstop=false
++case "$( uname )" in                #(
++  CYGWIN* )         cygwin=true  ;; #(
++  Darwin* )         darwin=true  ;; #(
++  MSYS* | MINGW* )  msys=true    ;; #(
++  NONSTOP* )        nonstop=true ;;
+ esac
+ 
+-# Attempt to set APP_HOME
+-# Resolve links: $0 may be a link
+-PRG="$0"
+-# Need this for relative symlinks.
+-while [ -h "$PRG" ] ; do
+-    ls=`ls -ld "$PRG"`
+-    link=`expr "$ls" : '.*-> \(.*\)$'`
+-    if expr "$link" : '/.*' > /dev/null; then
+-        PRG="$link"
+-    else
+-        PRG=`dirname "$PRG"`"/$link"
+-    fi
+-done
+-SAVED="`pwd`"
+-cd "`dirname \"$PRG\"`/" >/dev/null
+-APP_HOME="`pwd -P`"
+-cd "$SAVED" >/dev/null
+-
+ CLASSPATH=$APP_HOME/gradle/wrapper/gradle-wrapper.jar
+ 
++
+ # Determine the Java command to use to start the JVM.
+ if [ -n "$JAVA_HOME" ] ; then
+     if [ -x "$JAVA_HOME/jre/sh/java" ] ; then
+         # IBM's JDK on AIX uses strange locations for the executables
+-        JAVACMD="$JAVA_HOME/jre/sh/java"
++        JAVACMD=$JAVA_HOME/jre/sh/java
+     else
+-        JAVACMD="$JAVA_HOME/bin/java"
++        JAVACMD=$JAVA_HOME/bin/java
+     fi
+     if [ ! -x "$JAVACMD" ] ; then
+         die "ERROR: JAVA_HOME is set to an invalid directory: $JAVA_HOME
+@@ -79,7 +132,7 @@
+ location of your Java installation."
+     fi
+ else
+-    JAVACMD="java"
++    JAVACMD=java
+     which java >/dev/null 2>&1 || die "ERROR: JAVA_HOME is not set and no 'java' command could be found in your PATH.
+ 
+ Please set the JAVA_HOME variable in your environment to match the
+@@ -87,76 +140,95 @@
+ fi
+ 
+ # Increase the maximum file descriptors if we can.
+-if [ "$cygwin" = "false" -a "$darwin" = "false" ] ; then
+-    MAX_FD_LIMIT=`ulimit -H -n`
+-    if [ $? -eq 0 ] ; then
+-        if [ "$MAX_FD" = "maximum" -o "$MAX_FD" = "max" ] ; then
+-            MAX_FD="$MAX_FD_LIMIT"
+-        fi
+-        ulimit -n $MAX_FD
+-        if [ $? -ne 0 ] ; then
+-            warn "Could not set maximum file descriptor limit: $MAX_FD"
+-        fi
+-    else
+-        warn "Could not query maximum file descriptor limit: $MAX_FD_LIMIT"
+-    fi
++if ! "$cygwin" && ! "$darwin" && ! "$nonstop" ; then
++    case $MAX_FD in #(
++      max*)
++        MAX_FD=$( ulimit -H -n ) ||
++            warn "Could not query maximum file descriptor limit"
++    esac
++    case $MAX_FD in  #(
++      '' | soft) :;; #(
++      *)
++        ulimit -n "$MAX_FD" ||
++            warn "Could not set maximum file descriptor limit to $MAX_FD"
++    esac
+ fi
+ 
+-# For Darwin, add options to specify how the application appears in the dock
+-if $darwin; then
+-    GRADLE_OPTS="$GRADLE_OPTS \"-Xdock:name=$APP_NAME\" \"-Xdock:icon=$APP_HOME/media/gradle.icns\""
+-fi
++# Collect all arguments for the java command, stacking in reverse order:
++#   * args from the command line
++#   * the main class name
++#   * -classpath
++#   * -D...appname settings
++#   * --module-path (only if needed)
++#   * DEFAULT_JVM_OPTS, JAVA_OPTS, and GRADLE_OPTS environment variables.
+ 
+-# For Cygwin, switch paths to Windows format before running java
+-if $cygwin ; then
+-    APP_HOME=`cygpath --path --mixed "$APP_HOME"`
+-    CLASSPATH=`cygpath --path --mixed "$CLASSPATH"`
+-    JAVACMD=`cygpath --unix "$JAVACMD"`
++# For Cygwin or MSYS, switch paths to Windows format before running java
++if "$cygwin" || "$msys" ; then
++    APP_HOME=$( cygpath --path --mixed "$APP_HOME" )
++    CLASSPATH=$( cygpath --path --mixed "$CLASSPATH" )
+ 
+-    # We build the pattern for arguments to be converted via cygpath
+-    ROOTDIRSRAW=`find -L / -maxdepth 1 -mindepth 1 -type d 2>/dev/null`
+-    SEP=""
+-    for dir in $ROOTDIRSRAW ; do
+-        ROOTDIRS="$ROOTDIRS$SEP$dir"
+-        SEP="|"
+-    done
+-    OURCYGPATTERN="(^($ROOTDIRS))"
+-    # Add a user-defined pattern to the cygpath arguments
+-    if [ "$GRADLE_CYGPATTERN" != "" ] ; then
+-        OURCYGPATTERN="$OURCYGPATTERN|($GRADLE_CYGPATTERN)"
+-    fi
++    JAVACMD=$( cygpath --unix "$JAVACMD" )
++
+     # Now convert the arguments - kludge to limit ourselves to /bin/sh
+-    i=0
+-    for arg in "$@" ; do
+-        CHECK=`echo "$arg"|egrep -c "$OURCYGPATTERN" -`
+-        CHECK2=`echo "$arg"|egrep -c "^-"`                                 ### Determine if an option
+-
+-        if [ $CHECK -ne 0 ] && [ $CHECK2 -eq 0 ] ; then                    ### Added a condition
+-            eval `echo args$i`=`cygpath --path --ignore --mixed "$arg"`
+-        else
+-            eval `echo args$i`="\"$arg\""
+-        fi
+-        i=$((i+1))
+-    done
+-    case $i in
+-        (0) set -- ;;
+-        (1) set -- "$args0" ;;
+-        (2) set -- "$args0" "$args1" ;;
+-        (3) set -- "$args0" "$args1" "$args2" ;;
+-        (4) set -- "$args0" "$args1" "$args2" "$args3" ;;
+-        (5) set -- "$args0" "$args1" "$args2" "$args3" "$args4" ;;
+-        (6) set -- "$args0" "$args1" "$args2" "$args3" "$args4" "$args5" ;;
+-        (7) set -- "$args0" "$args1" "$args2" "$args3" "$args4" "$args5" "$args6" ;;
+-        (8) set -- "$args0" "$args1" "$args2" "$args3" "$args4" "$args5" "$args6" "$args7" ;;
+-        (9) set -- "$args0" "$args1" "$args2" "$args3" "$args4" "$args5" "$args6" "$args7" "$args8" ;;
+-    esac
++    for arg do
++        if
++            case $arg in                                #(
++              -*)   false ;;                            # don't mess with options #(
++              /?*)  t=${arg#/} t=/${t%%/*}              # looks like a POSIX filepath
++                    [ -e "$t" ] ;;                      #(
++              *)    false ;;
++            esac
++        then
++            arg=$( cygpath --path --ignore --mixed "$arg" )
++        fi
++        # Roll the args list around exactly as many times as the number of
++        # args, so each arg winds up back in the position where it started, but
++        # possibly modified.
++        #
++        # NB: a `for` loop captures its iteration list before it begins, so
++        # changing the positional parameters here affects neither the number of
++        # iterations, nor the values presented in `arg`.
++        shift                   # remove old arg
++        set -- "$@" "$arg"      # push replacement arg
++    done
+ fi
+ 
+-# Split up the JVM_OPTS And GRADLE_OPTS values into an array, following the shell quoting and substitution rules
+-function splitJvmOpts() {
+-    JVM_OPTS=("$@")
+-}
+-eval splitJvmOpts $DEFAULT_JVM_OPTS $JAVA_OPTS $GRADLE_OPTS
+-JVM_OPTS[${#JVM_OPTS[*]}]="-Dorg.gradle.appname=$APP_BASE_NAME"
++# Collect all arguments for the java command;
++#   * $DEFAULT_JVM_OPTS, $JAVA_OPTS, and $GRADLE_OPTS can contain fragments of
++#     shell script including quotes and variable substitutions, so put them in
++#     double quotes to make sure that they get re-expanded; and
++#   * put everything else in single quotes, so that it's not re-expanded.
++
++set -- \
++        "-Dorg.gradle.appname=$APP_BASE_NAME" \
++        -classpath "$CLASSPATH" \
++        org.gradle.wrapper.GradleWrapperMain \
++        "$@"
++
++# Use "xargs" to parse quoted args.
++#
++# With -n1 it outputs one arg per line, with the quotes and backslashes removed.
++#
++# In Bash we could simply go:
++#
++#   readarray ARGS < <( xargs -n1 <<<"$var" ) &&
++#   set -- "${ARGS[@]}" "$@"
++#
++# but POSIX shell has neither arrays nor command substitution, so instead we
++# post-process each arg (as a line of input to sed) to backslash-escape any
++# character that might be a shell metacharacter, then use eval to reverse
++# that process (while maintaining the separation between arguments), and wrap
++# the whole thing up as a single "set" statement.
++#
++# This will of course break if any of these variables contains a newline or
++# an unmatched quote.
++#
+ 
+-exec "$JAVACMD" "${JVM_OPTS[@]}" -classpath "$CLASSPATH" org.gradle.wrapper.GradleWrapperMain "$@"
++eval "set -- $(
++        printf '%s\n' "$DEFAULT_JVM_OPTS $JAVA_OPTS $GRADLE_OPTS" |
++        xargs -n1 |
++        sed ' s~[^-[:alnum:]+,./:=@_]~\\&~g; ' |
++        tr '\n' ' '
++    )" '"$@"'
++
++exec "$JAVACMD" "$@"
+Index: app/src/main/java/sk/libco/bestiaryfive/ui/MainActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package sk.libco.bestiaryfive.ui;\n\nimport android.app.SearchManager;\nimport android.content.Context;\nimport android.content.Intent;\nimport android.os.Build;\nimport android.os.Bundle;\nimport android.util.Log;\nimport android.view.Menu;\nimport android.view.MenuInflater;\nimport android.view.MenuItem;\nimport android.view.View;\nimport android.view.animation.AccelerateDecelerateInterpolator;\nimport android.widget.AdapterView;\nimport android.widget.ArrayAdapter;\nimport android.widget.CompoundButton;\nimport android.widget.Spinner;\nimport android.widget.TextView;\n\nimport androidx.appcompat.app.ActionBar;\nimport androidx.appcompat.app.AppCompatActivity;\nimport androidx.appcompat.app.AppCompatDelegate;\nimport androidx.appcompat.widget.SearchView;\nimport androidx.appcompat.widget.Toolbar;\nimport androidx.fragment.app.Fragment;\nimport androidx.fragment.app.FragmentTransaction;\n\nimport com.google.android.material.chip.Chip;\nimport com.google.android.material.chip.ChipDrawable;\nimport com.google.android.material.chip.ChipGroup;\n\nimport java.util.ArrayList;\nimport java.util.HashMap;\nimport java.util.List;\nimport java.util.Map;\n\nimport sk.libco.bestiaryfive.Bestiaries;\nimport sk.libco.bestiaryfive.Monster;\nimport sk.libco.bestiaryfive.R;\n\npublic class MainActivity extends AppCompatActivity implements MonsterListFragment.OnListFragmentInteractionListener, Bestiaries.BestiaryEvent {\n\n    private static final String TAG = \"MainActivity\";\n\n    //boolean addList = false;\n\n    Spinner spinner;\n    ArrayAdapter<String> spinnerDataAdapter;\n    MainActivityInfoFragment infoFragment = null; //fragment for when nothing is imported\n    MainActivityFragment monsterFragment = null; //fragment for single monster\n    MonsterListFragment monsterListFragment = null; //fragment for monster list\n    private MenuItem searchItem;\n    //private AsyncTask parseTask;\n    private SearchView searchView = null;\n    private SearchView.OnQueryTextListener queryTextListener;\n    private Bestiaries bestiaries;\n    private int selectedMonster = -1;\n    private int selectedBestiary = 0;\n\n    private NavigationIconClickListener navigationIconClickListener;\n\n\n    private Map<String, ArrayList<Chip>> filterCheckbox = new HashMap<String, ArrayList<Chip>>();\n\n    @Override\n    protected void onCreate(Bundle savedInstanceState) {\n\n        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);\n\n        //\n        bestiaries = new Bestiaries(this, this);\n\n        //Restore state\n        if (savedInstanceState != null) {\n            Log.d(TAG, \"Restoring Instance State\");\n            // Restore state members from saved instance\n            selectedMonster = savedInstanceState.getInt(\"selected_monster\");\n            selectedBestiary = savedInstanceState.getInt(\"selected_bestiary\");\n        }\n        selectedBestiary = bestiaries.setSelectedBestiary(selectedBestiary);\n\n\n        //UI\n        super.onCreate(savedInstanceState);\n        setContentView(R.layout.activity_main);\n\n        //Set toolbar\n\n//        Toolbar toolbar = findViewById(R.id.toolbar);\n//        setSupportActionBar(toolbar);\n//        ActionBar actionBar = getSupportActionBar();\n//        if (actionBar != null)\n//            actionBar.setDisplayShowTitleEnabled(false);\n//        else {\n//            Log.e(TAG, \"Toolbar error.\");\n//        }\n\n        //\n\n        // FILTERS\n\n        setFilters();\n\n        //\n\n        Toolbar toolbar = findViewById(R.id.toolbar);\n        this.setSupportActionBar(toolbar);\n        ActionBar actionBar = getSupportActionBar();\n        if (actionBar != null) {\n            actionBar.setDisplayShowTitleEnabled(false);\n        }\n\n        navigationIconClickListener = new NavigationIconClickListener(\n                this,\n                findViewById(R.id.mm_list),\n                findViewById(R.id.my_backdrop),\n                new AccelerateDecelerateInterpolator(),\n                this.getResources().getDrawable(R.drawable.ic_filter_list_black_24dp), // Menu open icon\n                this.getResources().getDrawable(R.drawable.ic_filter_list_black_24dp));\n\n        toolbar.setNavigationOnClickListener(navigationIconClickListener); // Menu close icon\n\n        //\n\n        // Set cut corner background for API 23+\n        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {\n            findViewById(R.id.mm_list).setBackground(this.getDrawable(R.drawable.grid_background_shape));\n        }\n\n\n        //Toolbar spinner\n        spinner = findViewById(R.id.spinner_nav);\n\n        //list.add(\"Monster Manual\");\n        spinnerDataAdapter = new ArrayAdapter<>(this,\n                android.R.layout.simple_spinner_item, bestiaries.spinnerList);\n        spinnerDataAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);\n        spinner.setAdapter(spinnerDataAdapter);\n        spinner.setSelection(selectedBestiary, false);\n        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {\n            @Override\n            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {\n                selectBestiary(position);\n            }\n\n            @Override\n            public void onNothingSelected(AdapterView<?> parentView) {\n                // your code here\n            }\n\n        });\n\n        //fragment\n        setFragment();\n\n    }\n\n    private void setFilters() {\n\n        filterCheckbox.clear();\n\n        // Type filter\n        ChipGroup chipGroupType = findViewById(R.id.chipGroupType);\n        if(chipGroupType != null) {\n            chipGroupType.removeAllViews();\n\n            ArrayList<Chip> filterDictionary = new ArrayList<Chip>();\n            for (String type : bestiaries.selectedBestiary.monsters.getTypeFilter()) {\n                ChipDrawable chipDrawable = ChipDrawable.createFromResource(this, R.xml.filter_chip);\n                chipDrawable.setBounds(0, 0, chipDrawable.getIntrinsicWidth(), chipDrawable.getIntrinsicHeight());\n                chipDrawable.setText(type);\n                Chip chip = new Chip(this);\n                chip.setChipDrawable(chipDrawable);\n                chip.setOnClickListener(new View.OnClickListener() {\n                    @Override\n                    public void onClick(View view) {\n\n                    }\n                });\n                chip.setOnCheckedChangeListener((compoundButton, b) -> {\n                    setFilterState();\n                });\n\n                chipGroupType.addView(chip);\n                filterDictionary.add(chip);\n            }\n            filterCheckbox.put(\"type\", filterDictionary);\n        }\n\n\n        // Size filter\n        ChipGroup chipGroupSize = findViewById(R.id.chipGroupSize);\n        if(chipGroupSize != null) {\n            chipGroupSize.removeAllViews();\n\n            ArrayList<Chip> filterDictionary = new ArrayList<Chip>();\n            for (String type : bestiaries.selectedBestiary.monsters.getSizeFilter()) {\n                ChipDrawable chipDrawable = ChipDrawable.createFromResource(this, R.xml.filter_chip);\n                chipDrawable.setBounds(0, 0, chipDrawable.getIntrinsicWidth(), chipDrawable.getIntrinsicHeight());\n                chipDrawable.setText(type);\n                Chip chip = new Chip(this);\n                chip.setChipDrawable(chipDrawable);\n                //must be implemented to be checkable for some reason.....................\n                chip.setOnClickListener(new View.OnClickListener() {\n                    @Override\n                    public void onClick(View view) {\n                        Log.d(TAG, \"onClick\");\n                    }\n                });\n                chip.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {\n                    @Override\n                    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {\n                        setFilterState();\n                    }\n                });\n                chipGroupSize.addView(chip);\n                filterDictionary.add(chip);\n            }\n            filterCheckbox.put(\"size\", filterDictionary);\n        }\n\n        TextView mmLabel = findViewById(R.id.mmLabel);\n        if (mmLabel != null) {\n            String bLabel = \"Monster Manual\";\n            if(bestiaries.selectedBestiary != null) {\n                bLabel = bestiaries.selectedBestiary.name;\n                if(bLabel.equals(\"All\") && bestiaries.getBestiariesCount() > 1) {\n                    bLabel = \"All Monster Manuals\";\n                }\n            }\n\n            mmLabel.setText(bLabel);\n        }\n\n    }\n\n    private void setFilterState() {\n\n        if (monsterListFragment != null) {\n            for (Chip chip : filterCheckbox.get(\"type\")) {\n                monsterListFragment.changeFilterType(chip.getText().toString(), chip.isChecked());\n            }\n\n            for (Chip chip : filterCheckbox.get(\"size\")) {\n                    monsterListFragment.changeFilterSize(chip.getText().toString(), chip.isChecked());\n            }\n        }\n\n    }\n\n    @Override\n    public void onBackPressed() {\n        super.onBackPressed();\n        setFilterState();\n    }\n\n    @Override\n    protected void onSaveInstanceState(Bundle savedInstanceState) {\n\n        savedInstanceState.putInt(\"selected_bestiary\", selectedBestiary);\n\n        if(selectedMonster > 0) {\n            Log.d(TAG,\"saving selected monster: \" + selectedMonster);\n            savedInstanceState.putInt(\"selected_monster\", selectedMonster);\n        }\n\n        // Always call the superclass so it can save the view hierarchy state\n        super.onSaveInstanceState(savedInstanceState);\n    }\n\n    //\n    @Override\n    protected void onResume() {\n        /*FragmentTransaction tx = this.getSupportFragmentManager().beginTransaction();\n        if (this.addList) {\n            MonsterListFragment list = this.monsterListFragment;\n            tx.add(R.id.fragment_container, list, \"list_fragment_tag\");\n        }\n\n        tx.commit();*/\n        super.onResume();\n\n        //this.addList = false;\n\n    }\n\n\n\n    @Override\n    protected void onPause() {\n\n        /*this.addList = this.monsterListFragment != null ? this.monsterListFragment.isAdded() : false;\n\n        if (this.addList) {\n            FragmentTransaction tx = this.getSupportFragmentManager().beginTransaction();\n            tx.remove(this.monsterListFragment);\n            tx.commit();\n        }\n        this.getSupportFragmentManager().executePendingTransactions();*/\n        super.onPause();\n\n    }\n    //\n\n    @Override\n    public boolean onCreateOptionsMenu(Menu menu) {\n        MenuInflater inflater = getMenuInflater();\n        inflater.inflate(R.menu.options_menu, menu);\n\n        //\n        searchItem = menu.findItem(R.id.search);\n        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);\n\n        if (searchItem != null) {\n            searchView = (SearchView) searchItem.getActionView();\n        }\n        if (searchView != null && searchManager != null) {\n            searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));\n\n            queryTextListener = new SearchView.OnQueryTextListener() {\n                @Override\n                public boolean onQueryTextChange(String newText) {\n                    if(bestiaries.selectedBestiary == null)\n                        return true;\n\n                    selectedMonster = -1;\n\n                    setFragment();\n\n                    monsterListFragment.search(newText);\n\n                    return true;\n                }\n                @Override\n                public boolean onQueryTextSubmit(String query) {\n                    if(query.isEmpty() || bestiaries.selectedBestiary == null)\n                        return true;\n\n                    for (Monster m:bestiaries.selectedBestiary.monsters.getMonsters()) {\n                        if(m.name.toLowerCase().startsWith(query.toLowerCase())) {\n                            setMonsterToView(m);\n                            //TODO:\n                            break;\n                        }\n                    }\n\n                    return true;\n                }\n            };\n            searchView.setOnQueryTextListener(queryTextListener);\n        }\n        return true;\n    }\n\n    @Override\n    public boolean onOptionsItemSelected(MenuItem item) {\n        switch (item.getItemId()) {\n            case R.id.search:\n                // Not implemented here\n                return false;\n            case R.id.import_file:\n                Intent intentImport = new Intent(this, ImportActivity.class);\n                startActivity(intentImport);\n                return true;\n            case R.id.help:\n                Intent intent = new Intent(this, InfoActivity.class);\n                startActivity(intent);\n                return true;\n            default:\n                break;\n        }\n        searchView.setOnQueryTextListener(queryTextListener);\n        return super.onOptionsItemSelected(item);\n    }\n\n    private void setFragment() {\n\n        spinner.setSelection(selectedBestiary, false);\n\n        //\n        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);\n\n        //create list fragment\n        if (!(currentFragment instanceof MonsterListFragment)) {\n            //if(monsterListFragment == null) {\n            monsterListFragment = new MonsterListFragment();\n            //}\n        } else {\n            monsterListFragment = (MonsterListFragment) currentFragment;\n        }\n\n        //if(bestiaries != null && bestiaries.selectedBestiary != null)\n        //{\n        //    monsterListFragment.setMonsterList(bestiaries.selectedBestiary.monsters);\n        //}\n        //\n\n        if (selectedMonster > 0 && bestiaries != null) {\n            setMonsterToView(bestiaries.getMonsterFromId(selectedMonster));\n            return;\n        }\n\n        if (bestiaries != null && bestiaries.getBestiariesCount() > 0) {\n\n            if (!(currentFragment instanceof MonsterListFragment)) {\n                replaceFragment(monsterListFragment, true);\n            }\n            setFilterState();\n\n        } else {\n            if (!(currentFragment instanceof MainActivityInfoFragment)) {\n                Log.d(TAG,\"Showing info fragment\");\n                infoFragment = new MainActivityInfoFragment();\n                replaceFragment(infoFragment,true);\n            } else {\n                infoFragment = (MainActivityInfoFragment) currentFragment;\n            }\n        }\n    }\n\n    private FragmentTransaction replaceFragment(Fragment newFragment, boolean commit) {\n\n        //Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);\n\n        if(newFragment.isAdded() /*|| (currentFragment != null && currentFragment.getClass().equals(newFragment.getClass()))*/)\n        {\n            return null;\n        }\n\n        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();\n        ft.replace(R.id.fragment_container, newFragment, null);\n        if(commit) {\n            //ft.commit();\n            ft.commitAllowingStateLoss();\n        }\n\n        return ft;\n\n    }\n\n    private void selectBestiary(int position) {\n        Log.d(TAG,\"Setting bestiary to position: \" + position);\n        selectedMonster = -1;\n        selectedBestiary = position;\n        bestiaries.setSelectedBestiary(position);\n        //selectedMonster = -1;\n        setFragment();\n        if(monsterListFragment != null)\n            monsterListFragment.setMonsterList(bestiaries.selectedBestiary.monsters.getMonsters());\n        //setMonsterToView(bestiaries.selectedBestiary.monsters.get(0));\n\n        setFilterState();\n    }\n\n    private void setMonsterToView(Monster monster) {\n\n        try {\n            if (monster == null || monster.id == null) {\n                Log.d(TAG, \"Monster to show is null\");\n                return;\n            }\n\n            selectedMonster = monster.id;\n            Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);\n\n            if (!(currentFragment instanceof MainActivityFragment)) {\n                Log.d(TAG, \"Showing monster fragment\");\n                //if (monsterFragment == null)\n                monsterFragment = new MainActivityFragment();\n\n                FragmentTransaction ft = replaceFragment(monsterFragment, false);\n                if (ft != null) {\n                    ft.addToBackStack(null);\n                    //ft.commit();\n                    ft.commitAllowingStateLoss();\n                }\n            } else {\n                monsterFragment = (MainActivityFragment) currentFragment;\n            }\n            bestiaries.loadMonsterDetails(monster);\n            monsterFragment.setMonsterToView(monster);\n            if(isBackdropShown()) {\n                navigationIconClickListener.onClick(null);\n            }\n        } catch (Exception e) {\n            Log.d(TAG, \"cannot set monster to view:\" + e.toString());\n        }\n\n    }\n\n    /**\n     * Callback from MonsterListFragment\n     * @param monster Monster user clicked\n     */\n    @Override\n    public void onMonsterSelected(Monster monster) {\n        Log.d(TAG,\"User clicked on: \" + monster.name);\n       // searchView.clearFocus();\n        setMonsterToView(monster);\n        if (searchItem != null) {\n            searchItem.collapseActionView();\n        }\n    }\n\n    @Override\n    public List<Monster> getMonsterList() {\n\n        if (bestiaries != null && bestiaries.selectedBestiary != null) {\n            selectedMonster = -1;\n            return bestiaries.selectedBestiary.monsters.getMonsters();\n        }\n        return null;\n    }\n\n    @Override\n    public void onUpButtonPressed() {\n        navigationIconClickListener.onClick(null);\n    }\n\n    @Override\n    public boolean isBackdropShown() {\n        return navigationIconClickListener.isBackdropShown();\n    }\n\n    @Override\n    public void onBestiaryChange() {\n        if(spinnerDataAdapter != null)\n            runOnUiThread(new Runnable() {\n                @Override\n                public void run() {\n                    spinnerDataAdapter.notifyDataSetChanged();\n                }\n            });\n\n        if(bestiaries != null && bestiaries.selectedBestiary == null) {\n            selectBestiary(selectedBestiary);\n        } else {\n            if(monsterListFragment != null)\n                monsterListFragment.setMonsterList(null);\n        }\n\n        setFilters();\n    }\n\n    @Override\n    public void onSelectedBestiaryChange() {\n        setFilters();\n    }\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/sk/libco/bestiaryfive/ui/MainActivity.java b/app/src/main/java/sk/libco/bestiaryfive/ui/MainActivity.java
+--- a/app/src/main/java/sk/libco/bestiaryfive/ui/MainActivity.java	(revision 10b43da3b8261f8fb37a4ca9eaac8c0badec94b6)
++++ b/app/src/main/java/sk/libco/bestiaryfive/ui/MainActivity.java	(date 1692468581208)
+@@ -3,6 +3,8 @@
+ import android.app.SearchManager;
+ import android.content.Context;
+ import android.content.Intent;
++import android.content.res.ColorStateList;
++import android.graphics.Color;
+ import android.os.Build;
+ import android.os.Bundle;
+ import android.util.Log;
+@@ -168,9 +170,10 @@
+             for (String type : bestiaries.selectedBestiary.monsters.getTypeFilter()) {
+                 ChipDrawable chipDrawable = ChipDrawable.createFromResource(this, R.xml.filter_chip);
+                 chipDrawable.setBounds(0, 0, chipDrawable.getIntrinsicWidth(), chipDrawable.getIntrinsicHeight());
+-                chipDrawable.setText(type);
+                 Chip chip = new Chip(this);
+                 chip.setChipDrawable(chipDrawable);
++                chip.setText(type);
++
+                 chip.setOnClickListener(new View.OnClickListener() {
+                     @Override
+                     public void onClick(View view) {
+@@ -197,9 +200,10 @@
+             for (String type : bestiaries.selectedBestiary.monsters.getSizeFilter()) {
+                 ChipDrawable chipDrawable = ChipDrawable.createFromResource(this, R.xml.filter_chip);
+                 chipDrawable.setBounds(0, 0, chipDrawable.getIntrinsicWidth(), chipDrawable.getIntrinsicHeight());
+-                chipDrawable.setText(type);
+                 Chip chip = new Chip(this);
+                 chip.setChipDrawable(chipDrawable);
++                chip.setText(type);
++
+                 //must be implemented to be checkable for some reason.....................
+                 chip.setOnClickListener(new View.OnClickListener() {
+                     @Override
+Index: .idea/modules.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"ProjectModuleManager\">\n    <modules>\n      <module fileurl=\"file://$PROJECT_DIR$/BestiaryFive.iml\" filepath=\"$PROJECT_DIR$/BestiaryFive.iml\" />\n      <module fileurl=\"file://$PROJECT_DIR$/app/app.iml\" filepath=\"$PROJECT_DIR$/app/app.iml\" />\n    </modules>\n  </component>\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/modules.xml b/.idea/modules.xml
+--- a/.idea/modules.xml	(revision 10b43da3b8261f8fb37a4ca9eaac8c0badec94b6)
++++ b/.idea/modules.xml	(date 1692448954381)
+@@ -2,8 +2,11 @@
+ <project version="4">
+   <component name="ProjectModuleManager">
+     <modules>
+-      <module fileurl="file://$PROJECT_DIR$/BestiaryFive.iml" filepath="$PROJECT_DIR$/BestiaryFive.iml" />
+-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
++      <module fileurl="file://$PROJECT_DIR$/.idea/modules/bestiary5thedition.iml" filepath="$PROJECT_DIR$/.idea/modules/bestiary5thedition.iml" />
++      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/bestiary5thedition.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/bestiary5thedition.app.iml" />
++      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/bestiary5thedition.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/bestiary5thedition.app.androidTest.iml" />
++      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/bestiary5thedition.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/bestiary5thedition.app.main.iml" />
++      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/bestiary5thedition.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/bestiary5thedition.app.unitTest.iml" />
+     </modules>
+   </component>
+ </project>
+\ No newline at end of file
+Index: gradle/wrapper/gradle-wrapper.properties
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>#Tue Jun 04 17:47:21 CEST 2019\ndistributionBase=GRADLE_USER_HOME\ndistributionPath=wrapper/dists\nzipStoreBase=GRADLE_USER_HOME\nzipStorePath=wrapper/dists\ndistributionUrl=https\\://services.gradle.org/distributions/gradle-5.1.1-all.zip\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>ISO-8859-1
+===================================================================
+diff --git a/gradle/wrapper/gradle-wrapper.properties b/gradle/wrapper/gradle-wrapper.properties
+--- a/gradle/wrapper/gradle-wrapper.properties	(revision 10b43da3b8261f8fb37a4ca9eaac8c0badec94b6)
++++ b/gradle/wrapper/gradle-wrapper.properties	(date 1692450162164)
+@@ -1,6 +1,6 @@
+-#Tue Jun 04 17:47:21 CEST 2019
++#Sat Aug 19 15:00:49 CEST 2023
+ distributionBase=GRADLE_USER_HOME
+ distributionPath=wrapper/dists
++distributionUrl=https\://services.gradle.org/distributions/gradle-8.3-bin.zip
+ zipStoreBase=GRADLE_USER_HOME
+ zipStorePath=wrapper/dists
+-distributionUrl=https\://services.gradle.org/distributions/gradle-5.1.1-all.zip
+Index: .idea/jarRepositories.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/jarRepositories.xml b/.idea/jarRepositories.xml
+new file mode 100644
+--- /dev/null	(date 1692449406675)
++++ b/.idea/jarRepositories.xml	(date 1692449406675)
+@@ -0,0 +1,30 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="RemoteRepositoriesConfiguration">
++    <remote-repository>
++      <option name="id" value="central" />
++      <option name="name" value="Maven Central repository" />
++      <option name="url" value="https://repo1.maven.org/maven2" />
++    </remote-repository>
++    <remote-repository>
++      <option name="id" value="jboss.community" />
++      <option name="name" value="JBoss Community repository" />
++      <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
++    </remote-repository>
++    <remote-repository>
++      <option name="id" value="BintrayJCenter" />
++      <option name="name" value="BintrayJCenter" />
++      <option name="url" value="https://jcenter.bintray.com/" />
++    </remote-repository>
++    <remote-repository>
++      <option name="id" value="Google" />
++      <option name="name" value="Google" />
++      <option name="url" value="https://dl.google.com/dl/android/maven2/" />
++    </remote-repository>
++    <remote-repository>
++      <option name="id" value="MavenRepo" />
++      <option name="name" value="MavenRepo" />
++      <option name="url" value="https://repo.maven.apache.org/maven2/" />
++    </remote-repository>
++  </component>
++</project>
+\ No newline at end of file
+Index: gradlew.bat
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>@if \"%DEBUG%\" == \"\" @echo off\n@rem ##########################################################################\n@rem\n@rem  Gradle startup script for Windows\n@rem\n@rem ##########################################################################\n\n@rem Set local scope for the variables with windows NT shell\nif \"%OS%\"==\"Windows_NT\" setlocal\n\n@rem Add default JVM options here. You can also use JAVA_OPTS and GRADLE_OPTS to pass JVM options to this script.\nset DEFAULT_JVM_OPTS=\n\nset DIRNAME=%~dp0\nif \"%DIRNAME%\" == \"\" set DIRNAME=.\nset APP_BASE_NAME=%~n0\nset APP_HOME=%DIRNAME%\n\n@rem Find java.exe\nif defined JAVA_HOME goto findJavaFromJavaHome\n\nset JAVA_EXE=java.exe\n%JAVA_EXE% -version >NUL 2>&1\nif \"%ERRORLEVEL%\" == \"0\" goto init\n\necho.\necho ERROR: JAVA_HOME is not set and no 'java' command could be found in your PATH.\necho.\necho Please set the JAVA_HOME variable in your environment to match the\necho location of your Java installation.\n\ngoto fail\n\n:findJavaFromJavaHome\nset JAVA_HOME=%JAVA_HOME:\"=%\nset JAVA_EXE=%JAVA_HOME%/bin/java.exe\n\nif exist \"%JAVA_EXE%\" goto init\n\necho.\necho ERROR: JAVA_HOME is set to an invalid directory: %JAVA_HOME%\necho.\necho Please set the JAVA_HOME variable in your environment to match the\necho location of your Java installation.\n\ngoto fail\n\n:init\n@rem Get command-line arguments, handling Windowz variants\n\nif not \"%OS%\" == \"Windows_NT\" goto win9xME_args\nif \"%@eval[2+2]\" == \"4\" goto 4NT_args\n\n:win9xME_args\n@rem Slurp the command line arguments.\nset CMD_LINE_ARGS=\nset _SKIP=2\n\n:win9xME_args_slurp\nif \"x%~1\" == \"x\" goto execute\n\nset CMD_LINE_ARGS=%*\ngoto execute\n\n:4NT_args\n@rem Get arguments from the 4NT Shell from JP Software\nset CMD_LINE_ARGS=%$\n\n:execute\n@rem Setup the command line\n\nset CLASSPATH=%APP_HOME%\\gradle\\wrapper\\gradle-wrapper.jar\n\n@rem Execute Gradle\n\"%JAVA_EXE%\" %DEFAULT_JVM_OPTS% %JAVA_OPTS% %GRADLE_OPTS% \"-Dorg.gradle.appname=%APP_BASE_NAME%\" -classpath \"%CLASSPATH%\" org.gradle.wrapper.GradleWrapperMain %CMD_LINE_ARGS%\n\n:end\n@rem End local scope for the variables with windows NT shell\nif \"%ERRORLEVEL%\"==\"0\" goto mainEnd\n\n:fail\nrem Set variable GRADLE_EXIT_CONSOLE if you need the _script_ return code instead of\nrem the _cmd.exe /c_ return code!\nif  not \"\" == \"%GRADLE_EXIT_CONSOLE%\" exit 1\nexit /b 1\n\n:mainEnd\nif \"%OS%\"==\"Windows_NT\" endlocal\n\n:omega\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/gradlew.bat b/gradlew.bat
+--- a/gradlew.bat	(revision 10b43da3b8261f8fb37a4ca9eaac8c0badec94b6)
++++ b/gradlew.bat	(date 1692448854432)
+@@ -1,3 +1,19 @@
++@rem
++@rem Copyright 2015 the original author or authors.
++@rem
++@rem Licensed under the Apache License, Version 2.0 (the "License");
++@rem you may not use this file except in compliance with the License.
++@rem You may obtain a copy of the License at
++@rem
++@rem      https://www.apache.org/licenses/LICENSE-2.0
++@rem
++@rem Unless required by applicable law or agreed to in writing, software
++@rem distributed under the License is distributed on an "AS IS" BASIS,
++@rem WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++@rem See the License for the specific language governing permissions and
++@rem limitations under the License.
++@rem
++
+ @if "%DEBUG%" == "" @echo off
+ @rem ##########################################################################
+ @rem
+@@ -8,20 +24,23 @@
+ @rem Set local scope for the variables with windows NT shell
+ if "%OS%"=="Windows_NT" setlocal
+ 
+-@rem Add default JVM options here. You can also use JAVA_OPTS and GRADLE_OPTS to pass JVM options to this script.
+-set DEFAULT_JVM_OPTS=
+-
+ set DIRNAME=%~dp0
+ if "%DIRNAME%" == "" set DIRNAME=.
+ set APP_BASE_NAME=%~n0
+ set APP_HOME=%DIRNAME%
+ 
++@rem Resolve any "." and ".." in APP_HOME to make it shorter.
++for %%i in ("%APP_HOME%") do set APP_HOME=%%~fi
++
++@rem Add default JVM options here. You can also use JAVA_OPTS and GRADLE_OPTS to pass JVM options to this script.
++set DEFAULT_JVM_OPTS="-Xmx64m" "-Xms64m"
++
+ @rem Find java.exe
+ if defined JAVA_HOME goto findJavaFromJavaHome
+ 
+ set JAVA_EXE=java.exe
+ %JAVA_EXE% -version >NUL 2>&1
+-if "%ERRORLEVEL%" == "0" goto init
++if "%ERRORLEVEL%" == "0" goto execute
+ 
+ echo.
+ echo ERROR: JAVA_HOME is not set and no 'java' command could be found in your PATH.
+@@ -35,7 +54,7 @@
+ set JAVA_HOME=%JAVA_HOME:"=%
+ set JAVA_EXE=%JAVA_HOME%/bin/java.exe
+ 
+-if exist "%JAVA_EXE%" goto init
++if exist "%JAVA_EXE%" goto execute
+ 
+ echo.
+ echo ERROR: JAVA_HOME is set to an invalid directory: %JAVA_HOME%
+@@ -45,34 +64,14 @@
+ 
+ goto fail
+ 
+-:init
+-@rem Get command-line arguments, handling Windowz variants
+-
+-if not "%OS%" == "Windows_NT" goto win9xME_args
+-if "%@eval[2+2]" == "4" goto 4NT_args
+-
+-:win9xME_args
+-@rem Slurp the command line arguments.
+-set CMD_LINE_ARGS=
+-set _SKIP=2
+-
+-:win9xME_args_slurp
+-if "x%~1" == "x" goto execute
+-
+-set CMD_LINE_ARGS=%*
+-goto execute
+-
+-:4NT_args
+-@rem Get arguments from the 4NT Shell from JP Software
+-set CMD_LINE_ARGS=%$
+-
+ :execute
+ @rem Setup the command line
+ 
+ set CLASSPATH=%APP_HOME%\gradle\wrapper\gradle-wrapper.jar
+ 
++
+ @rem Execute Gradle
+-"%JAVA_EXE%" %DEFAULT_JVM_OPTS% %JAVA_OPTS% %GRADLE_OPTS% "-Dorg.gradle.appname=%APP_BASE_NAME%" -classpath "%CLASSPATH%" org.gradle.wrapper.GradleWrapperMain %CMD_LINE_ARGS%
++"%JAVA_EXE%" %DEFAULT_JVM_OPTS% %JAVA_OPTS% %GRADLE_OPTS% "-Dorg.gradle.appname=%APP_BASE_NAME%" -classpath "%CLASSPATH%" org.gradle.wrapper.GradleWrapperMain %*
+ 
+ :end
+ @rem End local scope for the variables with windows NT shell
+Index: app/src/main/res/values/colors.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\n<resources>\n    <color name=\"colorPrimary\">#795548</color>\n    <color name=\"colorPrimaryDark\">#5d4037</color>\n    <color name=\"colorAccent\">#ff5252</color>\n\n    <color name=\"white\">#FFFFFF</color>\n    <color name=\"textBigRed\">#7a200d</color>\n</resources>\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/values/colors.xml b/app/src/main/res/values/colors.xml
+--- a/app/src/main/res/values/colors.xml	(revision 10b43da3b8261f8fb37a4ca9eaac8c0badec94b6)
++++ b/app/src/main/res/values/colors.xml	(date 1692466725649)
+@@ -6,4 +6,5 @@
+ 
+     <color name="white">#FFFFFF</color>
+     <color name="textBigRed">#7a200d</color>
++    <color name="textPrimary">#333333</color>
+ </resources>
+Index: gradle.properties
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+># Project-wide Gradle settings.\n\n# IDE (e.g. Android Studio) users:\n# Gradle settings configured through the IDE *will override*\n# any settings specified in this file.\n\n# For more details on how to configure your build environment visit\n# http://www.gradle.org/docs/current/userguide/build_environment.html\n\n# Specifies the JVM arguments used for the daemon process.\n# The setting is particularly useful for tweaking memory settings.\norg.gradle.jvmargs=-Xmx1536m\n\n# When configured, Gradle will run in incubating parallel mode.\n# This option should only be used with decoupled projects. More details, visit\n# http://www.gradle.org/docs/current/userguide/multi_project_builds.html#sec:decoupled_projects\n# org.gradle.parallel=true\n#android.databinding.enableV2=true\n\n# AndroidX package structure to make it clearer which packages are bundled with the\n# Android operating system, and which are packaged with your app's APK\n# https://developer.android.com/topic/libraries/support-library/androidx-rn\nandroid.useAndroidX=true\n# Automatically convert third-party libraries to use AndroidX\nandroid.enableJetifier=true
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>ISO-8859-1
+===================================================================
+diff --git a/gradle.properties b/gradle.properties
+--- a/gradle.properties	(revision 10b43da3b8261f8fb37a4ca9eaac8c0badec94b6)
++++ b/gradle.properties	(date 1692449086814)
+@@ -22,4 +22,7 @@
+ # https://developer.android.com/topic/libraries/support-library/androidx-rn
+ android.useAndroidX=true
+ # Automatically convert third-party libraries to use AndroidX
+-android.enableJetifier=true
+\ No newline at end of file
++android.enableJetifier=true
++android.defaults.buildfeatures.buildconfig=true
++android.nonTransitiveRClass=false
++android.nonFinalResIds=false
+\ No newline at end of file
+Index: build.gradle
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>// Top-level build file where you can add configuration options common to all sub-projects/modules.\n\nbuildscript {\n    repositories {\n        jcenter()\n        google()\n    }\n    dependencies {\n        classpath 'com.android.tools.build:gradle:3.4.1'\n\n        // NOTE: Do not place your application dependencies here; they belong\n        // in the individual module build.gradle files\n    }\n}\n\nallprojects {\n    repositories {\n        jcenter()\n        google()\n    }\n}\n\ntask clean(type: Delete) {\n    delete rootProject.buildDir\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/build.gradle b/build.gradle
+--- a/build.gradle	(revision 10b43da3b8261f8fb37a4ca9eaac8c0badec94b6)
++++ b/build.gradle	(date 1692450217314)
+@@ -2,11 +2,11 @@
+ 
+ buildscript {
+     repositories {
+-        jcenter()
++        mavenCentral()
+         google()
+     }
+     dependencies {
+-        classpath 'com.android.tools.build:gradle:3.4.1'
++        classpath 'com.android.tools.build:gradle:8.1.0'
+ 
+         // NOTE: Do not place your application dependencies here; they belong
+         // in the individual module build.gradle files
+@@ -15,7 +15,7 @@
+ 
+ allprojects {
+     repositories {
+-        jcenter()
++        mavenCentral()
+         google()
+     }
+ }
+Index: app/src/main/res/values/styles.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><resources>\n\n    <!-- Base application theme. -->\n    <style name=\"AppTheme\" parent=\"Theme.MaterialComponents.Light.NoActionBar\">\n        <!-- Customize your theme here. -->\n        <item name=\"colorPrimary\">@color/colorPrimary</item>\n        <item name=\"colorPrimaryDark\">@color/colorPrimaryDark</item>\n        <item name=\"colorAccent\">@color/colorAccent</item>\n\n        <item name=\"android:spinnerItemStyle\">@style/spinnerItemStyle</item>\n    </style>\n\n    <style name=\"spinnerItemStyle\" parent=\"android:Widget.TextView.SpinnerItem\">\n        <item name=\"android:textColor\">@color/white</item>\n    </style>\n\n    <style name=\"spinnerDropDownItemStyle\" parent=\"android:TextAppearance.Widget.TextView.SpinnerItem\" />\n\n    <style name=\"AppTheme.AppBarOverlay\" parent=\"ThemeOverlay.AppCompat.Dark.ActionBar\" />\n\n    <style name=\"AppTheme.PopupOverlay\" parent=\"ThemeOverlay.AppCompat.Dark\" />\n\n    <style name=\"Widget.Backdrop\" parent=\"\">\n        <item name=\"android:background\">@color/colorPrimary</item>\n    </style>\n\n</resources>\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/values/styles.xml b/app/src/main/res/values/styles.xml
+--- a/app/src/main/res/values/styles.xml	(revision 10b43da3b8261f8fb37a4ca9eaac8c0badec94b6)
++++ b/app/src/main/res/values/styles.xml	(date 1692467595318)
+@@ -16,12 +16,18 @@
+ 
+     <style name="spinnerDropDownItemStyle" parent="android:TextAppearance.Widget.TextView.SpinnerItem" />
+ 
+-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
++    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar" />
+ 
+-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Dark" />
++    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.MaterialComponents.Dark" />
+ 
+     <style name="Widget.Backdrop" parent="">
+         <item name="android:background">@color/colorPrimary</item>
+     </style>
+ 
++    <style name="MyChipStyle" parent="Widget.MaterialComponents.Chip.Choice">
++        <item name="android:textColor">@color/textPrimary</item>
++        <!-- any other customizations you want -->
++    </style>
++
++
+ </resources>
+Index: app/src/main/res/xml/filter_chip.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><chip\nstyle=\"@style/Widget.MaterialComponents.Chip.Filter\"\nxmlns:android=\"http://schemas.android.com/apk/res/android\"\nandroid:layout_width=\"wrap_content\"\nandroid:layout_height=\"wrap_content\"\n    android:checkable=\"true\"\n/>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/xml/filter_chip.xml b/app/src/main/res/xml/filter_chip.xml
+--- a/app/src/main/res/xml/filter_chip.xml	(revision 10b43da3b8261f8fb37a4ca9eaac8c0badec94b6)
++++ b/app/src/main/res/xml/filter_chip.xml	(date 1692468202328)
+@@ -4,4 +4,5 @@
+ android:layout_width="wrap_content"
+ android:layout_height="wrap_content"
+     android:checkable="true"
+-/>
+\ No newline at end of file
++>
++</chip>
+\ No newline at end of file
+Index: .idea/compiler.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"CompilerConfiguration\">\n    <wildcardResourcePatterns>\n      <entry name=\"!?*.java\" />\n      <entry name=\"!?*.form\" />\n      <entry name=\"!?*.class\" />\n      <entry name=\"!?*.groovy\" />\n      <entry name=\"!?*.scala\" />\n      <entry name=\"!?*.flex\" />\n      <entry name=\"!?*.kt\" />\n      <entry name=\"!?*.clj\" />\n    </wildcardResourcePatterns>\n  </component>\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/compiler.xml b/.idea/compiler.xml
+--- a/.idea/compiler.xml	(revision 10b43da3b8261f8fb37a4ca9eaac8c0badec94b6)
++++ b/.idea/compiler.xml	(date 1692448898222)
+@@ -11,5 +11,6 @@
+       <entry name="!?*.kt" />
+       <entry name="!?*.clj" />
+     </wildcardResourcePatterns>
++    <bytecodeTargetLevel target="17" />
+   </component>
+ </project>
+\ No newline at end of file
+Index: app/build.gradle
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>apply plugin: 'com.android.application'\n\nandroid {\n    compileSdkVersion 29\n    buildToolsVersion '29.0.0'\n    defaultConfig {\n        applicationId \"sk.libco.bestiaryfive\"\n        minSdkVersion 19\n        targetSdkVersion 29\n        versionCode 16\n        versionName \"1.1\"\n        testInstrumentationRunner \"androidx.test.runner.AndroidJUnitRunner\"\n        vectorDrawables.useSupportLibrary = true\n    }\n    buildTypes {\n        release {\n            minifyEnabled false\n            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'\n        }\n    }\n    compileOptions {\n        sourceCompatibility JavaVersion.VERSION_1_8\n        targetCompatibility JavaVersion.VERSION_1_8\n    }\n    dataBinding {\n        enabled true\n    }\n}\n\ndependencies {\n    implementation fileTree(dir: 'libs', include: ['*.jar'])\n    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'\n    androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0', {\n        exclude group: 'com.android.support', module: 'support-annotations'\n    })\n    implementation 'androidx.appcompat:appcompat:1.0.2'\n    implementation 'androidx.recyclerview:recyclerview:1.0.0'\n    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'\n    implementation 'com.google.android.material:material:1.0.0'\n    implementation 'androidx.legacy:legacy-support-v4:1.0.0'\n    testImplementation 'junit:junit:4.12'\n    testImplementation \"org.robolectric:robolectric:3.3.2\"\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/build.gradle b/app/build.gradle
+--- a/app/build.gradle	(revision 10b43da3b8261f8fb37a4ca9eaac8c0badec94b6)
++++ b/app/build.gradle	(date 1692464305734)
+@@ -1,14 +1,13 @@
+ apply plugin: 'com.android.application'
+ 
+ android {
+-    compileSdkVersion 29
+-    buildToolsVersion '29.0.0'
++    compileSdk 34
+     defaultConfig {
+         applicationId "sk.libco.bestiaryfive"
+         minSdkVersion 19
+-        targetSdkVersion 29
++        targetSdkVersion 34
+         versionCode 16
+-        versionName "1.1"
++        versionName '1.2'
+         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+         vectorDrawables.useSupportLibrary = true
+     }
+@@ -19,25 +18,27 @@
+         }
+     }
+     compileOptions {
+-        sourceCompatibility JavaVersion.VERSION_1_8
+-        targetCompatibility JavaVersion.VERSION_1_8
++        sourceCompatibility JavaVersion.VERSION_11
++        targetCompatibility JavaVersion.VERSION_11
+     }
+     dataBinding {
+         enabled true
+     }
++    namespace 'sk.libco.bestiaryfive'
+ }
+ 
+ dependencies {
+     implementation fileTree(dir: 'libs', include: ['*.jar'])
+-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+-    androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0', {
++    implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.0"))
++    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
++    androidTestImplementation('androidx.test.espresso:espresso-core:3.5.1', {
+         exclude group: 'com.android.support', module: 'support-annotations'
+     })
+-    implementation 'androidx.appcompat:appcompat:1.0.2'
+-    implementation 'androidx.recyclerview:recyclerview:1.0.0'
+-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+-    implementation 'com.google.android.material:material:1.0.0'
++    implementation 'androidx.appcompat:appcompat:1.6.1'
++    implementation 'androidx.recyclerview:recyclerview:1.3.1'
++    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
++    implementation 'com.google.android.material:material:1.9.0'
+     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+-    testImplementation 'junit:junit:4.12'
+-    testImplementation "org.robolectric:robolectric:3.3.2"
++    testImplementation 'junit:junit:4.13.2'
++    testImplementation 'org.robolectric:robolectric:4.10.3'
+ }
+Index: app/src/main/res/layout/activity_main.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\n<layout xmlns:android=\"http://schemas.android.com/apk/res/android\"\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\">\n\n    <data>\n    </data>\n\n    <androidx.coordinatorlayout.widget.CoordinatorLayout\n        android:layout_width=\"match_parent\"\n        android:layout_height=\"match_parent\"\n      >\n\n        <LinearLayout\n            style=\"@style/Widget.Backdrop\"\n            android:layout_width=\"match_parent\"\n            android:layout_height=\"match_parent\"\n            android:layout_marginBottom=\"32dp\"\n            android:gravity=\"start\"\n            android:orientation=\"vertical\"\n            android:paddingLeft=\"16dp\"\n            android:paddingTop=\"54dp\"\n            android:paddingRight=\"16dp\"\n            android:paddingBottom=\"16dp\">\n\n            <include layout=\"@layout/content_backdrop_filter\" />\n\n        </LinearLayout>\n\n        <com.google.android.material.appbar.AppBarLayout\n            android:id=\"@+id/my_backdrop\"\n            android:layout_width=\"match_parent\"\n            android:layout_height=\"wrap_content\"\n            app:elevation=\"0dp\">\n\n            <!--<androidx.appcompat.widget.Toolbar-->\n            <!--android:id=\"@+id/toolbar\"-->\n            <!--android:layout_width=\"match_parent\"-->\n            <!--android:layout_height=\"?android:attr/actionBarSize\"-->\n            <!--android:background=\"@color/colorPrimary\"-->\n            <!--android:theme=\"@style/ThemeOverlay.AppCompat.Dark.ActionBar\">-->\n\n            <!--<Spinner-->\n            <!--android:id=\"@+id/spinner_nav\"-->\n            <!--android:layout_width=\"wrap_content\"-->\n            <!--android:layout_height=\"wrap_content\" />-->\n\n            <!--</androidx.appcompat.widget.Toolbar>-->\n\n\n            <androidx.appcompat.widget.Toolbar\n                android:id=\"@+id/toolbar\"\n                android:layout_width=\"match_parent\"\n                android:layout_height=\"?android:attr/actionBarSize\"\n                android:background=\"@color/colorPrimary\"\n                app:theme=\"@style/ThemeOverlay.AppCompat.Dark.ActionBar\"\n                android:paddingEnd=\"12dp\"\n                android:paddingLeft=\"12dp\"\n                android:paddingRight=\"12dp\"\n                android:paddingStart=\"12dp\"\n                app:contentInsetStart=\"0dp\"\n                app:navigationIcon=\"@drawable/ic_filter_list_black_24dp\"\n                app:title=\"\">\n\n            </androidx.appcompat.widget.Toolbar>\n\n        </com.google.android.material.appbar.AppBarLayout>\n\n\n        <LinearLayout\n            android:id=\"@+id/mm_list\"\n            android:layout_width=\"match_parent\"\n            android:layout_height=\"match_parent\"\n            android:layout_marginTop=\"54dp\"\n            android:background=\"@color/white\"\n            android:elevation=\"8dp\">\n\n            <include\n                layout=\"@layout/content_main\"\n                android:layout_width=\"match_parent\"\n                android:layout_height=\"match_parent\" />\n\n        </LinearLayout>\n\n\n    </androidx.coordinatorlayout.widget.CoordinatorLayout>\n</layout>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/activity_main.xml b/app/src/main/res/layout/activity_main.xml
+--- a/app/src/main/res/layout/activity_main.xml	(revision 10b43da3b8261f8fb37a4ca9eaac8c0badec94b6)
++++ b/app/src/main/res/layout/activity_main.xml	(date 1692467513399)
+@@ -1,5 +1,6 @@
+ <?xml version="1.0" encoding="utf-8"?>
+-<layout xmlns:android="http://schemas.android.com/apk/res/android"
++<layout xmlns:tools="http://schemas.android.com/tools"
++    xmlns:android="http://schemas.android.com/apk/res/android"
+     xmlns:app="http://schemas.android.com/apk/res-auto">
+ 
+     <data>
+@@ -53,6 +54,7 @@
+                 android:layout_height="?android:attr/actionBarSize"
+                 android:background="@color/colorPrimary"
+                 app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
++                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                 android:paddingEnd="12dp"
+                 android:paddingLeft="12dp"
+                 android:paddingRight="12dp"
+@@ -72,7 +74,8 @@
+             android:layout_height="match_parent"
+             android:layout_marginTop="54dp"
+             android:background="@color/white"
+-            android:elevation="8dp">
++            android:elevation="8dp"
++            tools:targetApi="lollipop">
+ 
+             <include
+                 layout="@layout/content_main"
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"CMakeSettings\">\n    <configurations>\n      <configuration PROFILE_NAME=\"Debug\" CONFIG_NAME=\"Debug\" />\n    </configurations>\n  </component>\n  <component name=\"ProjectRootManager\" version=\"2\" languageLevel=\"JDK_1_8\" project-jdk-name=\"1.8\" project-jdk-type=\"JavaSDK\">\n    <output url=\"file://$PROJECT_DIR$/build/classes\" />\n  </component>\n  <component name=\"ProjectType\">\n    <option name=\"id\" value=\"Android\" />\n  </component>\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+--- a/.idea/misc.xml	(revision 10b43da3b8261f8fb37a4ca9eaac8c0badec94b6)
++++ b/.idea/misc.xml	(date 1692450835247)
+@@ -1,11 +1,10 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+   <component name="CMakeSettings">
+     <configurations>
+       <configuration PROFILE_NAME="Debug" CONFIG_NAME="Debug" />
+     </configurations>
+   </component>
+-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="1.8" project-jdk-type="JavaSDK">
++  <component name="ProjectRootManager" version="2" languageLevel="JDK_17" default="true" project-jdk-name="jbr-17" project-jdk-type="JavaSDK">
+     <output url="file://$PROJECT_DIR$/build/classes" />
+   </component>
+   <component name="ProjectType">
